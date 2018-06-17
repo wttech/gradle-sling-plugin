@@ -9,7 +9,6 @@ import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import java.io.File
 
-// TODO https://github.com/Cognifide/gradle-sling-plugin/issues/135
 class VltRunner(val project: Project) {
 
     val logger: Logger = project.logger

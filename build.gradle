@@ -6,8 +6,8 @@ plugins {
 }
 
 group 'com.cognifide.gradle'
-version '4.0.3'
-description = 'Gradle AEM Plugin'
+version '1.0.0'
+description = 'Gradle Sling Plugin'
 defaultTasks = ['clean', 'build', 'publishToMavenLocal']
 
 repositories {
@@ -43,20 +43,20 @@ dependencies {
 gradlePlugin {
     plugins {
         base {
-            id = "com.cognifide.aem.base"
-            implementationClass = "com.cognifide.gradle.aem.base.BasePlugin"
+            id = "com.cognifide.sling.base"
+            implementationClass = "com.cognifide.gradle.sling.base.BasePlugin"
         }
         pkg {
-            id = "com.cognifide.aem.package"
-            implementationClass = "com.cognifide.gradle.aem.pkg.PackagePlugin"
+            id = "com.cognifide.sling.package"
+            implementationClass = "com.cognifide.gradle.sling.pkg.PackagePlugin"
         }
         bundle {
-            id = "com.cognifide.aem.bundle"
-            implementationClass = "com.cognifide.gradle.aem.bundle.BundlePlugin"
+            id = "com.cognifide.sling.bundle"
+            implementationClass = "com.cognifide.gradle.sling.bundle.BundlePlugin"
         }
         instance {
-            id = "com.cognifide.aem.instance"
-            implementationClass = "com.cognifide.gradle.aem.instance.InstancePlugin"
+            id = "com.cognifide.sling.instance"
+            implementationClass = "com.cognifide.gradle.sling.instance.InstancePlugin"
         }
     }
 }
@@ -94,11 +94,11 @@ bintray {
     publications = ['mavenJava']
     pkg {
         repo = 'maven-public'
-        name = 'gradle-aem-plugin'
+        name = 'gradle-sling-plugin'
         userOrg = 'cognifide'
         licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Cognifide/gradle-aem-plugin.git'
-        labels = ['aem', 'cq', 'vault', 'scr']
+        vcsUrl = 'https://github.com/Cognifide/gradle-sling-plugin.git'
+        labels = ['sling', 'vault', 'scr']
         version {
             name = project.version
             desc = "${project.description} ${project.version}"

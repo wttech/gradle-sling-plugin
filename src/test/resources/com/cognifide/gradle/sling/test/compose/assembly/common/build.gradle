@@ -1,0 +1,23 @@
+buildscript {
+    apply from: "$rootProject.projectDir/gradle/buildscript.gradle", to: buildscript
+}
+
+description = 'Example - Common'
+defaultTasks = [':slingDeploy']
+
+apply plugin: 'com.cognifide.sling.bundle'
+apply plugin: "kotlin"
+
+dependencies {
+    slingInstall group: 'org.jetbrains.kotlin', name: 'kotlin-osgi-bundle', version: '1.2.21'
+    slingEmbed group: 'org.hashids', name: 'hashids', version: '1.0.1'
+}
+
+sling {
+    config {
+        bundlePackage = "com.company.sling.example.common"
+    }
+    bundle {
+        exportPackage "org.hashids"
+    }
+}

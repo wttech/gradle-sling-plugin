@@ -1,0 +1,17 @@
+// Plugins configuration
+
+pluginManagement {
+	repositories {
+		mavenLocal()
+		jcenter()
+	}
+	resolutionStrategy {
+		eachPlugin {
+			if (requested.id.namespace == 'com.cognifide.sling') {
+				useModule('com.cognifide.gradle:sling-plugin:1.0.0')
+			}
+		}
+	}
+}
+
+rootProject.name = 'example'

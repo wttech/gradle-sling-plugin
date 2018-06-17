@@ -1,0 +1,66 @@
+buildscript {
+    apply from: "$rootProject.projectDir/gradle/buildscript.gradle", to: buildscript
+}
+
+description = 'Example'
+defaultTasks = [':slingSatisfy', ':slingDeploy']
+
+apply plugin: 'com.cognifide.sling.package'
+apply plugin: 'com.cognifide.sling.instance'
+
+allprojects { subproject ->
+    group = 'com.company.sling'
+    version = '1.0.0-SNAPSHOT'
+
+    repositories {
+        maven { url "https://repo.adobe.com/nexus/content/groups/public" }
+        maven { url "https://repo1.maven.org/maven2" }
+        jcenter()
+        mavenLocal()
+    }
+
+    plugins.withId 'com.cognifide.sling.base', {
+        sling {
+            config {
+                localInstance "http://localhost:4502"
+                localInstance "http://localhost:4503"
+            }
+        }
+    }
+
+    plugins.withId 'com.cognifide.sling.bundle', {
+        jar {
+            manifest {
+                attributes([
+                        'Bundle-Name'    : subproject.description,
+                        'Bundle-Category': 'example',
+                        'Bundle-Vendor'  : 'Company'
+                ])
+            }
+        }
+
+        dependencies {
+            compile group: 'org.slf4j', name: 'slf4j-api', version: '1.5.10'
+            compile group: 'org.osgi', name: 'osgi.cmpn', version: '6.0.0'
+        }
+    }
+}
+
+slingSatisfy {
+    packages {
+        group 'dependencies', {
+            // local("pkg/vanityurls-components-1.0.2.zip")
+        }
+
+        group 'tools', {
+            url('https://github.com/OlsonDigital/sling-groovy-console/releases/download/9.0.1/sling-groovy-console-9.0.1.zip')
+            url("https://github.com/Cognifide/APM/releases/download/cqsm-2.0.0/apm-2.0.0.zip")
+        }
+    }
+}
+
+slingCompose {
+    includeProject(':common')
+    includeProject(':core')
+    includeProject(':design')
+}

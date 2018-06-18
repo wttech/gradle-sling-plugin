@@ -4,7 +4,6 @@ import com.cognifide.gradle.sling.api.SlingConfig
 import com.cognifide.gradle.sling.api.SlingException
 import com.cognifide.gradle.sling.internal.Formats
 import com.cognifide.gradle.sling.internal.Patterns
-import com.cognifide.gradle.sling.internal.ProgressLogger
 import com.cognifide.gradle.sling.internal.PropertyParser
 import com.cognifide.gradle.sling.internal.file.FileOperations
 import org.apache.commons.io.FileUtils
@@ -12,7 +11,6 @@ import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.util.GFileUtils
-import org.zeroturnaround.zip.ZipUtil
 import java.io.File
 
 class LocalHandle(val project: Project, val instance: Instance) {
@@ -21,9 +19,7 @@ class LocalHandle(val project: Project, val instance: Instance) {
         const val JAR_STATIC_FILES_PATH = "static/"
 
         val JAR_NAME_PATTERNS = listOf(
-                "*sling-quickstart*.jar",
-                "*cq-quickstart*.jar",
-                "*quickstart*.jar",
+                "*sling*.jar",
                 "*.jar"
         )
 
@@ -32,9 +28,9 @@ class LocalHandle(val project: Project, val instance: Instance) {
         const val LOCK_INIT = "init"
     }
 
-    class Script(val wrapper: File, val bin: File, val command: List<String>) {
+    class Script(val script: File, val command: List<String>) {
         val commandLine: List<String>
-            get() = command + listOf(wrapper.absolutePath)
+            get() = command + listOf(script.absolutePath)
 
         override fun toString(): String {
             return "Script(commandLine=$commandLine)"
@@ -47,11 +43,7 @@ class LocalHandle(val project: Project, val instance: Instance) {
 
     val dir = File("${config.createPath}/${instance.type}")
 
-    val jar = File(dir, "sling-quickstart.jar")
-
-    val staticDir = File(dir, "crx-quickstart")
-
-    val license = File(dir, "license.properties")
+    val jar = File(dir, "sling.jar")
 
     val startScript: Script
         get() = binScript("start")
@@ -61,9 +53,9 @@ class LocalHandle(val project: Project, val instance: Instance) {
 
     private fun binScript(name: String, os: OperatingSystem = OperatingSystem.current()): Script {
         return if (os.isWindows) {
-            Script(File(dir, "$name.bat"), File(staticDir, "bin/$name.bat"), listOf("cmd", "/C"))
+            Script(File(dir, "$name.bat"), listOf("cmd", "/C"))
         } else {
-            Script(File(dir, name), File(staticDir, "bin/$name"), listOf("sh"))
+            Script(File(dir, name), listOf("sh"))
         }
     }
 
@@ -82,12 +74,6 @@ class LocalHandle(val project: Project, val instance: Instance) {
 
         logger.info("Validating instance files")
         validateFiles()
-
-        logger.info("Extracting Sling static files from JAR")
-        extractStaticFiles()
-
-        logger.info("Correcting Sling static files")
-        correctStaticFiles()
 
         logger.info("Creating default instance files")
         FileOperations.copyResources(InstancePlugin.FILES_PATH, dir, true)
@@ -133,64 +119,6 @@ class LocalHandle(val project: Project, val instance: Instance) {
         if (!jar.exists()) {
             throw SlingException("Instance JAR file not found at path: ${jar.absolutePath}. Is instance JAR URL configured?")
         }
-
-        if (!license.exists()) {
-            throw SlingException("License file not found at path: ${license.absolutePath}. Is instance license URL configured?")
-        }
-    }
-
-    private fun correctStaticFiles() {
-        FileOperations.amendFile(binScript("start", OperatingSystem.forName("windows")).bin, {
-            var result = it
-
-            // Force CMD to be launched in closable window mode. Inject nice title.
-            result = result.replace("start \"CQ\" cmd.exe /K", "start /min \"$instance\" cmd.exe /C") // Sling <= 6.2
-            result = result.replace("start \"CQ\" cmd.exe /C", "start /min \"$instance\" cmd.exe /C") // Sling 6.3
-
-            // Introduce missing CQ_START_OPTS injectable by parent script.
-            result = result.replace("set START_OPTS=start -c %CurrDirName% -i launchpad", "set START_OPTS=start -c %CurrDirName% -i launchpad %CQ_START_OPTS%")
-
-            result
-        })
-
-        FileOperations.amendFile(binScript("start", OperatingSystem.forName("unix")).bin, {
-            var result = it
-
-            // Introduce missing CQ_START_OPTS injectable by parent script.
-            result = result.replace("START_OPTS=\"start -c ${'$'}{CURR_DIR} -i launchpad\"", "START_OPTS=\"start -c ${'$'}{CURR_DIR} -i launchpad ${'$'}{CQ_START_OPTS}\"")
-
-            result
-        })
-
-        // Ensure that 'logs' directory exists
-        GFileUtils.mkdirs(File(staticDir, "logs"))
-    }
-
-    private fun extractStaticFiles() {
-        val progressLogger = ProgressLogger(project, "Extracting static files from JAR  '${jar.absolutePath}' to directory: $staticDir")
-        progressLogger.started()
-
-        var total = 0
-        ZipUtil.iterate(jar, { entry ->
-            if (entry.name.startsWith(JAR_STATIC_FILES_PATH)) {
-                total++
-            }
-        })
-
-        var processed = 0
-        ZipUtil.unpack(jar, staticDir, { name ->
-            if (name.startsWith(JAR_STATIC_FILES_PATH)) {
-                val fileName = name.substringAfterLast("/")
-
-                progressLogger.progress("Extracting: $fileName [${Formats.percent(processed, total)}]")
-                processed++
-                name.substring(JAR_STATIC_FILES_PATH.length)
-            } else {
-                name
-            }
-        })
-
-        progressLogger.completed()
     }
 
     private fun cleanDir(create: Boolean) {

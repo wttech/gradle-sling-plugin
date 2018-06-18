@@ -1,6 +1,1 @@
-set CQ_PORT={{instance.httpPort}}
-set CQ_RUNMODE={{instance.runModesString}}
-set CQ_JVM_OPTS={{instance.jvmOptsString}}
-set CQ_START_OPTS={{instance.startOptsString}}
-
-call crx-quickstart\bin\start.bat
+java {{instance.jvmOptsString}} -jar {{handle.jar.name}} start {{instance.startOptsString}} -p {{instance.httpPort}}

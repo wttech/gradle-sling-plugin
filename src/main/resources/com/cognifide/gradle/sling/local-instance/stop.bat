@@ -1,1 +1,1 @@
-call crx-quickstart/bin/stop.bat
+java -jar {{handle.jar.name}} stop -p {{instance.httpPort}}

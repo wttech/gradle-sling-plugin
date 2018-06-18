@@ -80,7 +80,7 @@ class InstanceState(private var _sync: InstanceSync, val instance: Instance) {
 
     companion object {
         val PLATFORM_COMPONENTS = setOf(
-                "com.day.crx.packaging.*",
+                "com.composum.sling.core.pckgmgr.*",
                 "org.apache.sling.installer.*"
         )
     }

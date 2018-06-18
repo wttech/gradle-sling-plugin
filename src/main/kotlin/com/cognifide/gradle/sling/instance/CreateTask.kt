@@ -16,9 +16,9 @@ open class CreateTask : SlingDefaultTask() {
 
         const val DOWNLOAD_DIR = "download"
 
-        const val LICENSE_URL_PROP = "sling.instance.local.licenseUrl"
-
         const val JAR_URL_PROP = "sling.instance.local.jarUrl"
+
+        const val JAR_URL_DEFAULT = "http://www-us.apache.org/dist/sling/org.apache.sling.starter-10.jar"
     }
 
     @Internal
@@ -35,14 +35,9 @@ open class CreateTask : SlingDefaultTask() {
     }
 
     private fun instanceFilesByProperties() {
-        val jarUrl = props.string(JAR_URL_PROP)
-        if (!jarUrl.isNullOrBlank()) {
-            instanceFileResolver.url(jarUrl!!)
-        }
-
-        val licenseUrl = props.string(LICENSE_URL_PROP)
-        if (!licenseUrl.isNullOrBlank()) {
-            instanceFileResolver.url(licenseUrl!!)
+        val jarUrl = props.string(JAR_URL_PROP, JAR_URL_DEFAULT)
+        if (!jarUrl.isBlank()) {
+            instanceFileResolver.url(jarUrl)
         }
     }
 

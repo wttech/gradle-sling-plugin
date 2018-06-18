@@ -22,8 +22,8 @@ allprojects { subproject ->
     plugins.withId 'com.cognifide.sling.base', {
         sling {
             config {
-                localInstance "http://localhost:4502"
-                localInstance "http://localhost:4503"
+                localInstance "http://localhost:8080", { type = "primary" }
+                localInstance "http://localhost:8081", { type = "secondary" }
             }
         }
     }

@@ -29,7 +29,6 @@ class PackagePlugin : Plugin<Project> {
         tasks.create(PurgeTask.NAME, PurgeTask::class.java)
         val install = tasks.create(InstallTask.NAME, InstallTask::class.java)
         tasks.create(UninstallTask.NAME, UninstallTask::class.java)
-        val activate = tasks.create(ActivateTask.NAME, ActivateTask::class.java)
         val deploy = tasks.create(DeployTask.NAME, DeployTask::class.java)
 
         val assemble = tasks.getByName(LifecycleBasePlugin.ASSEMBLE_TASK_NAME)
@@ -47,7 +46,6 @@ class PackagePlugin : Plugin<Project> {
 
         upload.dependsOn(compose)
         install.mustRunAfter(compose, upload)
-        activate.mustRunAfter(compose, upload, install)
 
         deploy.dependsOn(compose)
     }

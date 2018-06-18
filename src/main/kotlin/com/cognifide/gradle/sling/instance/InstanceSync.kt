@@ -338,42 +338,6 @@ class InstanceSync(val project: Project, val instance: Instance) {
         installPackage(uploadPackage(file).path)
     }
 
-    fun distributePackage(file: File) {
-        val packagePath = uploadPackage(file).path
-
-        installPackage(packagePath)
-        activatePackage(packagePath)
-    }
-
-    fun activatePackage(path: String): UploadResponse {
-        val url = "$jsonTargetUrl$path/?cmd=replicate"
-
-        logger.info("Activating package using command: $url")
-
-        val json: String
-        try {
-            json = postMultipart(url)
-        } catch (e: Exception) {
-            throw DeployException("Cannot activate package", e)
-        }
-
-        val response = try {
-            UploadResponse.fromJson(json)
-        } catch (e: Exception) {
-            logger.error("Malformed JSON response", e)
-            throw DeployException("Package activation failed", e)
-        }
-
-        if (response.isSuccess) {
-            logger.info("Package activated")
-        } else {
-            logger.error("Package activation failed: + " + response.msg)
-            throw DeployException(response.msg)
-        }
-
-        return response
-    }
-
     fun deletePackage(path: String) {
         val url = "$htmlTargetUrl$path/?cmd=delete"
 

@@ -15,7 +15,7 @@ class LocalInstance private constructor() : Instance, Serializable {
 
     override lateinit var password: String
 
-    override lateinit var typeName: String
+    override var type: String = Instance.TYPE_DEFAULT
 
     override lateinit var environment: String
 
@@ -51,7 +51,7 @@ class LocalInstance private constructor() : Instance, Serializable {
 
     @get:JsonIgnore
     val runModesDefault
-        get() = listOf(type.name.toLowerCase())
+        get() = listOf(type.toLowerCase())
 
     @get:JsonIgnore
     var runModes: List<String> = mutableListOf(ENVIRONMENT)
@@ -66,7 +66,7 @@ class LocalInstance private constructor() : Instance, Serializable {
     override var packages: ListResponse? = null
 
     override fun toString(): String {
-        return "LocalInstance(httpUrl='$httpUrl', user='$user', password='$hiddenPassword', typeName='$typeName', debugPort=$debugPort)"
+        return "LocalInstance(httpUrl='$httpUrl', user='$user', password='$hiddenPassword', type='$type', debugPort=$debugPort)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -103,7 +103,6 @@ class LocalInstance private constructor() : Instance, Serializable {
 
                 this.httpUrl = instanceUrl.httpUrl
                 this.password = instanceUrl.password
-                this.typeName = instanceUrl.typeName
                 this.debugPort = instanceUrl.debugPort
                 this.environment = ENVIRONMENT
 

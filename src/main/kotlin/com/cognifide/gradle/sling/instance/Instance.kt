@@ -18,17 +18,13 @@ interface Instance : Serializable {
 
         val ENVIRONMENT_CMD = "cmd"
 
-        val URL_AUTHOR_DEFAULT = "http://localhost:4502"
-
-        val URL_PUBLISH_DEFAULT = "http://localhost:4503"
+        val URL_DEFAULT = "http://localhost:8080"
 
         val USER_DEFAULT = "admin"
 
         val PASSWORD_DEFAULT = "admin"
 
-        val AUTHORS_PROP = "sling.instance.authors"
-
-        val PUBLISHERS_PROP = "sling.instance.publishers"
+        val TYPE_DEFAULT = "main"
 
         fun parse(str: String): List<RemoteInstance> {
             return str.split(";").map { urlRaw ->
@@ -41,7 +37,7 @@ interface Instance : Serializable {
                         RemoteInstance.create(httpUrl, {
                             this.user = user
                             this.password = password
-                            this.typeName = type
+                            this.type = type
                         })
                     }
                     3 -> {
@@ -72,7 +68,7 @@ interface Instance : Serializable {
 
                 LocalInstance.create(httpUrl, {
                     this.environment = environment
-                    this.typeName = typeName
+                    this.type = typeName
 
                     props["password"]?.let { this.password = it }
                     props["jvmOpts"]?.let { this.jvmOpts = it.split(" ") }
@@ -94,7 +90,7 @@ interface Instance : Serializable {
 
                 RemoteInstance.create(httpUrl, {
                     this.environment = environment
-                    this.typeName = typeName
+                    this.type = typeName
 
                     props["user"]?.let { this.user = it }
                     props["password"]?.let { this.password = it }
@@ -123,10 +119,7 @@ interface Instance : Serializable {
         fun defaults(project: Project): List<RemoteInstance> {
             val config = SlingConfig.of(project)
 
-            return listOf(
-                    RemoteInstance.create(URL_AUTHOR_DEFAULT, { environment = config.environment }),
-                    RemoteInstance.create(URL_PUBLISH_DEFAULT, { environment = config.environment })
-            )
+            return listOf(RemoteInstance.create(URL_DEFAULT, { environment = config.environment }))
         }
 
         fun filter(project: Project): List<Instance> {
@@ -144,17 +137,7 @@ interface Instance : Serializable {
             }
 
             // Defined by build script, via properties or defaults are filterable by name
-            return all.filter { instance ->
-                when {
-                    config.props.flag(AUTHORS_PROP) -> {
-                        Patterns.wildcard(instance.name, "${config.environment}-${InstanceType.AUTHOR}*")
-                    }
-                    config.props.flag(PUBLISHERS_PROP) -> {
-                        Patterns.wildcard(instance.name, "${config.environment}-${InstanceType.PUBLISH}*")
-                    }
-                    else -> Patterns.wildcards(instance.name, instanceFilter)
-                }
-            }
+            return all.filter { Patterns.wildcards(it.name, instanceFilter) }
         }
 
         fun <T : Instance> filter(project: Project, type: KClass<T>): List<T> {
@@ -198,17 +181,14 @@ interface Instance : Serializable {
     val cmd: Boolean
         get() = environment == ENVIRONMENT_CMD
 
-    val typeName: String
-
-    val type: InstanceType
-        get() = InstanceType.byName(typeName)
+    val type: String
 
     @get:JsonIgnore
     val credentials: String
         get() = "$user:$password"
 
     val name: String
-        get() = "$environment-$typeName"
+        get() = "$environment-$type"
 
     fun validate() {
         if (!Formats.URL_VALIDATOR.isValid(httpUrl)) {
@@ -227,7 +207,7 @@ interface Instance : Serializable {
             throw SlingException("Environment cannot be blank in $this")
         }
 
-        if (typeName.isBlank()) {
+        if (type.isBlank()) {
             throw SlingException("Type cannot be blank in $this")
         }
     }

@@ -19,17 +19,9 @@ open class DeployTask : SlingDefaultTask() {
     @TaskAction
     fun deploy() {
         val pkg = config.packageFile
-        val instances = if (config.deployDistributed) {
-            Instance.filter(project, config.instanceAuthorName)
-        } else {
-            Instance.filter(project)
-        }
+        val instances = Instance.filter(project)
 
-        if (config.deployDistributed) {
-            instances.sync(project, { it.distributePackage(pkg) })
-        } else {
-            instances.sync(project, { it.deployPackage(pkg) })
-        }
+        instances.sync(project, { it.deployPackage(pkg) })
 
         notifier.default("Package deployed", "${pkg.name} on ${instances.names}")
     }

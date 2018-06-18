@@ -45,7 +45,7 @@ class LocalHandle(val project: Project, val instance: Instance) {
 
     val config = SlingConfig.of(project)
 
-    val dir = File("${config.createPath}/${instance.typeName}")
+    val dir = File("${config.createPath}/${instance.type}")
 
     val jar = File(dir, "sling-quickstart.jar")
 

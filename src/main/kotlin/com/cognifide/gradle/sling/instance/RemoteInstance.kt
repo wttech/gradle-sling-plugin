@@ -14,16 +14,16 @@ class RemoteInstance private constructor() : Instance, Serializable {
 
     override lateinit var password: String
 
-    override lateinit var typeName: String
-
     override lateinit var environment: String
+
+    override var type: String = Instance.TYPE_DEFAULT
 
     @Transient
     @get:JsonIgnore
     override var packages: ListResponse? = null
 
     override fun toString(): String {
-        return "RemoteInstance(httpUrl='$httpUrl', user='$user', password='$hiddenPassword', environment='$environment', typeName='$typeName')"
+        return "RemoteInstance(httpUrl='$httpUrl', user='$user', password='$hiddenPassword', environment='$environment', type='$type')"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -54,7 +54,6 @@ class RemoteInstance private constructor() : Instance, Serializable {
                 this.httpUrl = instanceUrl.httpUrl
                 this.user = instanceUrl.user
                 this.password = instanceUrl.password
-                this.typeName = instanceUrl.typeName
                 this.environment = Instance.ENVIRONMENT_CMD
 
                 this.apply(configurer)

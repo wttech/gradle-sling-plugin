@@ -17,32 +17,20 @@
     "created": "2017-12-19T21:39:38.058+0000",
     "config": {
       "instances": {
-        "local-author": {
-          "httpUrl": "http://localhost:4502",
+        "local-main": {
+          "httpUrl": "http://localhost:8080",
           "user": "admin",
           "password": "admin",
-          "typeName": "author",
+          "type": "main",
           "environment": "local",
-          "name": "local-author",
-          "type": "AUTHOR",
-          "httpPort": 4502
-        },
-        "local-publish": {
-          "httpUrl": "http://localhost:4503",
-          "user": "admin",
-          "password": "admin",
-          "typeName": "publish",
-          "environment": "local",
-          "name": "local-publish",
-          "type": "PUBLISH",
-          "httpPort": 4503
+          "name": "local-main",
+          "httpPort": 8080
         }
       },
       "environment": "local",
 
       "instanceName": "local-*",
       "instanceList": "",
-      "instanceAuthorName": "local-AUTHOR*",
       "instanceConnectionTimeout": 5000,
       "instanceConnectionUntrustedSsl": true,
 
@@ -83,7 +71,6 @@
 
       "notificationEnabled": false,
 
-      "deployDistributed": false,
       "uploadForce": true,
       "uploadRetryTimes": 3,
       "uploadRetryDelay": 30000,

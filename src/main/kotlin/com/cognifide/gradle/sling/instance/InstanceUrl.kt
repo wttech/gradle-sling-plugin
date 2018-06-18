@@ -46,12 +46,6 @@ class InstanceUrl(raw: String) {
             }
         }
 
-    val typeName: String
-        get() = InstanceType.nameByUrl(httpUrl)
-
-    val type: InstanceType
-        get() = InstanceType.byUrl(httpUrl)
-
     val debugPort: Int
         get() = if (config.port != -1) {
             "1$httpPort".toInt()

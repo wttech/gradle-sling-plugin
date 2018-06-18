@@ -69,13 +69,6 @@ class SlingConfig(
     var instanceList: String = props.string("sling.instance.list", "")
 
     /**
-     * Determines instance which will be used when CRX package activation from author to publishers
-     * will be performed (only if distributed deploy is enabled).
-     */
-    @Input
-    var instanceAuthorName: String = props.string("sling.instance.author.name", "$environment-${InstanceType.AUTHOR}*")
-
-    /**
      * Defines maximum time after which initializing connection to Sling will be aborted (e.g on upload, install).
      */
     @Input
@@ -254,12 +247,6 @@ class SlingConfig(
      */
     @Input
     var packageSkipDownloadName = props.boolean("sling.package.skipDownloadName", true)
-
-    /**
-     * Enables deployment via CRX package activation from author to publishers when e.g they are not accessible.
-     */
-    @Input
-    var deployDistributed: Boolean = props.flag("sling.deploy.distributed")
 
     /**
      * Force upload CRX package regardless if it was previously uploaded.

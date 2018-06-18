@@ -414,7 +414,7 @@ class SlingConfig(
      * Repeat health check when failed (brute-forcing).
      */
     @Input
-    var awaitHealthRetryTimes = props.long("sling.await.health.retry.times", 3L)
+    var awaitHealthRetryTimes = props.long("sling.await.health.retry.times", 5L)
 
     /**
      * Time to wait after repeating failed health check.

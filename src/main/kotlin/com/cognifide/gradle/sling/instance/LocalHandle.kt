@@ -16,8 +16,6 @@ import java.io.File
 class LocalHandle(val project: Project, val instance: Instance) {
 
     companion object {
-        const val JAR_STATIC_FILES_PATH = "static/"
-
         val JAR_NAME_PATTERNS = listOf(
                 "*sling*.jar",
                 "*.jar"

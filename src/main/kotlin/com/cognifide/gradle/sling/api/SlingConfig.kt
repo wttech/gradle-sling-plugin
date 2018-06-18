@@ -426,7 +426,7 @@ class SlingConfig(
      * Time in milliseconds to postpone instance stability checks after triggering instances restart.
      */
     @Input
-    var reloadDelay: Long = props.long("sling.reload.delay", TimeUnit.SECONDS.toMillis(10))
+    var reloadDelay: Long = props.long("sling.reload.delay", TimeUnit.SECONDS.toMillis(3))
 
     /**
      * Satisfy is a lazy task, which means that it will not install package that is already installed.

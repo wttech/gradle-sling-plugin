@@ -267,12 +267,6 @@ class SlingConfig(
     var uploadRetryDelay: Long = props.long("sling.upload.retry.delay", TimeUnit.SECONDS.toMillis(30))
 
     /**
-     * Determines if when on package install, sub-packages included in CRX package content should be also installed.
-     */
-    @Input
-    var installRecursive: Boolean = props.boolean("sling.install.recursive", true)
-
-    /**
      * Repeat install when failed (brute-forcing).
      */
     @Input

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.gradle.api.Project
 
+// TODO https://github.com/ist-dresden/composum/issues/135
 @JsonIgnoreProperties(ignoreUnknown = true)
 class ListResponse private constructor() {
 

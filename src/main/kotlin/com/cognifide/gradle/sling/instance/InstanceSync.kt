@@ -36,21 +36,12 @@ import java.util.*
 
 class InstanceSync(val project: Project, val instance: Instance) {
 
-    companion object {
-        private const val PACKAGE_MANAGER_SERVICE_SUFFIX = "/crx/packmgr/service"
-
-        private const val PACKAGE_MANAGER_LIST_SUFFIX = "/crx/packmgr/list.jsp"
-    }
-
     val config = SlingConfig.of(project)
 
     val logger = project.logger
 
-    val jsonTargetUrl = instance.httpUrl + PACKAGE_MANAGER_SERVICE_SUFFIX + "/.json"
-
-    val htmlTargetUrl = instance.httpUrl + PACKAGE_MANAGER_SERVICE_SUFFIX + "/.html"
-
-    val listPackagesUrl = instance.httpUrl + PACKAGE_MANAGER_LIST_SUFFIX
+    // TODO https://github.com/ist-dresden/composum/issues/135
+    val listPackagesUrl = instance.httpUrl + "/bin/cpm/package.tree.json"
 
     val bundlesUrl = "${instance.httpUrl}/system/console/bundles.json"
 
@@ -227,7 +218,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
         return resolver(instance.packages!!)
     }
 
-    fun uploadPackage(file: File): UploadResponse {
+    fun uploadPackage(file: File): PackageResponse {
         lateinit var exception: DeployException
         for (i in 0..config.uploadRetryTimes) {
             try {
@@ -248,23 +239,19 @@ class InstanceSync(val project: Project, val instance: Instance) {
         throw exception
     }
 
-    fun uploadPackageOnce(file: File): UploadResponse {
-        val url = "$jsonTargetUrl/?cmd=upload"
+    fun uploadPackageOnce(file: File): PackageResponse {
+        val url = "${instance.httpUrl}/bin/cpm/package.upload.json"
 
         logger.info("Uploading package at path '{}' to URL '{}'", file.path, url)
 
         try {
             val json = postMultipart(url, mapOf(
-                    "package" to file,
+                    "file" to file,
                     "force" to (config.uploadForce || isSnapshot(file))
             ))
-            val response = UploadResponse.fromJson(json)
-
-            if (response.isSuccess) {
-                logger.info(response.msg)
-            } else {
-                logger.error(response.msg)
-                throw DeployException(response.msg)
+            val response = PackageResponse.fromJson(json)
+            if (!response.success) {
+                throw DeployException("Upload ended with status: ${response.status}")
             }
 
             return response
@@ -275,7 +262,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
         }
     }
 
-    fun installPackage(uploadedPackagePath: String): InstallResponse {
+    fun installPackage(uploadedPackagePath: String): PackageResponse {
         lateinit var exception: DeployException
         for (i in 0..config.installRetryTimes) {
             try {
@@ -295,33 +282,16 @@ class InstanceSync(val project: Project, val instance: Instance) {
         throw exception
     }
 
-    fun installPackageOnce(uploadedPackagePath: String): InstallResponse {
-        val url = "$htmlTargetUrl$uploadedPackagePath/?cmd=install"
+    fun installPackageOnce(uploadedPackagePath: String): PackageResponse {
+        val url = "${instance.httpUrl}/bin/cpm/package.install.json"
 
         logger.info("Installing package using command: $url")
 
         try {
-            val json = postMultipart(url, mapOf("recursive" to config.installRecursive))
-            val response = InstallResponse(json)
-
-            when (response.status) {
-                HtmlResponse.Status.SUCCESS -> if (response.errors.isEmpty()) {
-                    logger.info("Package successfully installed.")
-                } else {
-                    logger.warn("Package installed with errors")
-                    response.errors.forEach { logger.error(it) }
-                    throw DeployException("Installation completed with errors!")
-                }
-                HtmlResponse.Status.SUCCESS_WITH_ERRORS -> {
-                    logger.error("Package installed with errors.")
-                    response.errors.forEach { logger.error(it) }
-                    throw DeployException("Installation completed with errors!")
-                }
-                HtmlResponse.Status.FAIL -> {
-                    logger.error("Installation failed.")
-                    response.errors.forEach { logger.error(it) }
-                    throw DeployException("Installation incomplete!")
-                }
+            val json = postUrlencoded(url, mapOf("path" to uploadedPackagePath))
+            val response = PackageResponse.fromJson(json)
+            if (!response.success) {
+                throw DeployException("Install ended with status: ${response.status}")
             }
 
             return response
@@ -339,12 +309,12 @@ class InstanceSync(val project: Project, val instance: Instance) {
     }
 
     fun deletePackage(path: String) {
-        val url = "$htmlTargetUrl$path/?cmd=delete"
+        val url = "${instance.httpUrl}/bin/cpm/package.delete.json"
 
         logger.info("Deleting package using command: $url")
 
         try {
-            val rawHtml = postMultipart(url)
+            val rawHtml = postUrlencoded(url, mapOf("path" to path))
             val response = DeleteResponse(rawHtml)
 
             when (response.status) {
@@ -369,12 +339,12 @@ class InstanceSync(val project: Project, val instance: Instance) {
     }
 
     fun uninstallPackage(installedPackagePath: String) {
-        val url = "$htmlTargetUrl$installedPackagePath/?cmd=uninstall"
+        val url = "${instance.httpUrl}/bin/cpm/package.uninstall.json"
 
         logger.info("Uninstalling package using command: $url")
 
         try {
-            val rawHtml = postMultipart(url, mapOf("recursive" to config.installRecursive))
+            val rawHtml = postUrlencoded(url, mapOf("path" to installedPackagePath))
             val response = UninstallResponse(rawHtml)
 
             when (response.status) {

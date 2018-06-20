@@ -16,9 +16,7 @@ import org.apache.http.auth.UsernamePasswordCredentials
 import org.apache.http.client.HttpClient
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.entity.UrlEncodedFormEntity
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.client.methods.HttpRequestBase
+import org.apache.http.client.methods.*
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory
 import org.apache.http.entity.mime.MultipartEntityBuilder
@@ -39,9 +37,6 @@ class InstanceSync(val project: Project, val instance: Instance) {
     val config = SlingConfig.of(project)
 
     val logger = project.logger
-
-    // TODO https://github.com/ist-dresden/composum/issues/135
-    val listPackagesUrl = instance.httpUrl + "/bin/cpm/package.tree.json"
 
     val bundlesUrl = "${instance.httpUrl}/system/console/bundles.json"
 
@@ -65,6 +60,14 @@ class InstanceSync(val project: Project, val instance: Instance) {
 
     fun get(url: String): String {
         return fetch(HttpGet(normalizeUrl(url)))
+    }
+
+    fun delete(url: String): String {
+        return fetch(HttpDelete(normalizeUrl(url)))
+    }
+
+    fun put(url: String): String {
+        return fetch(HttpPut(normalizeUrl(url)))
     }
 
     fun postUrlencoded(url: String, params: Map<String, Any> = mapOf()): String {
@@ -204,11 +207,11 @@ class InstanceSync(val project: Project, val instance: Instance) {
     }
 
     private fun resolveRemotePackage(group: String, name: String, version: String): Package? {
-        val url = "${instance.httpUrl}/bin/cpm/package.tree.json/$group"
+        val url = "${instance.httpUrl}/bin/cpm/package.list.json"
 
         logger.debug("Asking for uploaded packages using URL: '$url'")
         val packages = try {
-            PackageTreeResponse.fromJson(get(url)).packages
+            ListResponse.fromJson(get(url))
         } catch (e: Exception) {
             throw DeployException("Cannot determine remote package!", e)
         }
@@ -246,22 +249,24 @@ class InstanceSync(val project: Project, val instance: Instance) {
 
         logger.info("Uploading package at path '{}' to URL '{}'", file.path, url)
 
-        try {
-            val json = postMultipart(url, mapOf(
+        val json = try {
+            postMultipart(url, mapOf(
                     "file" to file,
                     "force" to (config.uploadForce || isSnapshot(file))
             ))
-            val response = PackageResponse.fromJson(json)
-            if (!response.success) {
-                throw DeployException("Upload ended with status: ${response.status}")
-            }
-
-            return response
         } catch (e: FileNotFoundException) {
             throw DeployException(String.format("Package file '%s' not found!", file.path), e)
         } catch (e: Exception) {
-            throw DeployException("Cannot upload package", e)
+            throw DeployException("Cannot upload package.", e)
         }
+
+        val response = UploadResponse.fromJson(json)
+        if (!response.success) {
+            throw DeployException("Upload ended with status: ${response.status}")
+        }
+
+        return response
+
     }
 
     fun installPackage(uploadedPackagePath: String): PackageResponse {
@@ -289,17 +294,17 @@ class InstanceSync(val project: Project, val instance: Instance) {
 
         logger.info("Installing package using command: $url")
 
-        try {
-            val json = postUrlencoded(url, mapOf("path" to uploadedPackagePath))
-            val response = PackageResponse.fromJson(json)
-            if (!response.success) {
-                throw DeployException("Install ended with status: ${response.status}")
-            }
-
-            return response
+        val json = try {
+            postUrlencoded(url, mapOf("path" to uploadedPackagePath))
         } catch (e: Exception) {
             throw DeployException("Cannot install package.", e)
         }
+        val response = InstallResponse.fromJson(json)
+        if (!response.success) {
+            throw DeployException("Install ended with status: ${response.status}")
+        }
+
+        return response
     }
 
     fun isSnapshot(file: File): Boolean {
@@ -310,64 +315,42 @@ class InstanceSync(val project: Project, val instance: Instance) {
         installPackage(uploadPackage(file).path)
     }
 
-    fun deletePackage(path: String) {
-        val url = "${instance.httpUrl}/bin/cpm/package.delete.json"
+    fun deletePackage(path: String): DeleteResponse {
+        val url = "${instance.httpUrl}/bin/cpm/package.delete.json?path=$path"
 
         logger.info("Deleting package using command: $url")
 
-        try {
-            val rawHtml = postUrlencoded(url, mapOf("path" to path))
-            val response = DeleteResponse(rawHtml)
-
-            when (response.status) {
-                HtmlResponse.Status.SUCCESS,
-                HtmlResponse.Status.SUCCESS_WITH_ERRORS -> if (response.errors.isEmpty()) {
-                    logger.info("Package successfully deleted.")
-                } else {
-                    logger.warn("Package deleted with errors.")
-                    response.errors.forEach { logger.error(it) }
-                    throw DeployException("Package deleted with errors!")
-                }
-                HtmlResponse.Status.FAIL -> {
-                    logger.error("Package deleting failed.")
-                    response.errors.forEach { logger.error(it) }
-                    throw DeployException("Package deleting failed!")
-                }
-            }
-
+        val json = try {
+            delete(url)
         } catch (e: Exception) {
             throw DeployException("Cannot delete package.", e)
         }
+
+        val response = DeleteResponse.fromJson(json)
+        if (!response.success) {
+            throw DeployException("Uninstall ended with status: ${response.status}")
+        }
+
+        return response
     }
 
-    fun uninstallPackage(installedPackagePath: String) {
+    fun uninstallPackage(installedPackagePath: String): PackageResponse {
         val url = "${instance.httpUrl}/bin/cpm/package.uninstall.json"
 
         logger.info("Uninstalling package using command: $url")
 
-        try {
-            val rawHtml = postUrlencoded(url, mapOf("path" to installedPackagePath))
-            val response = UninstallResponse(rawHtml)
-
-            when (response.status) {
-                HtmlResponse.Status.SUCCESS,
-                HtmlResponse.Status.SUCCESS_WITH_ERRORS -> if (response.errors.isEmpty()) {
-                    logger.info("Package successfully uninstalled.")
-                } else {
-                    logger.warn("Package uninstalled with errors.")
-                    response.errors.forEach { logger.error(it) }
-                    throw DeployException("Package uninstalled with errors!")
-                }
-                HtmlResponse.Status.FAIL -> {
-                    logger.error("Package uninstalling failed.")
-                    response.errors.forEach { logger.error(it) }
-                    throw DeployException("Package uninstalling failed!")
-                }
-            }
-
+        val json = try {
+            postUrlencoded(url, mapOf("path" to installedPackagePath))
         } catch (e: Exception) {
             throw DeployException("Cannot uninstall package.", e)
         }
+
+        val response = UninstallResponse.fromJson(json)
+        if (!response.success) {
+            throw DeployException("Uninstall ended with status: ${response.status}")
+        }
+
+        return response
     }
 
     fun determineInstanceState(): InstanceState {

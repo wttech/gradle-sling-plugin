@@ -1,21 +1,23 @@
 package com.cognifide.gradle.sling.pkg.deploy
 
-class DeleteResponse(private val rawHtml: String) : HtmlResponse(rawHtml) {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.ObjectMapper
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class DeleteResponse private constructor() {
+
+    lateinit var operation: String
+
+    lateinit var status: String
+
+    lateinit var path: String
+
+    val success: Boolean
+        get() = (operation == "uninstallation" && status == "done")
 
     companion object {
-        val DELETE_SUCCESS = "Package deleted in"
-    }
-
-    override fun getErrorPatterns(): List<ErrorPattern> {
-        return emptyList()
-    }
-
-    override val status: Status
-        get() {
-            return if (rawHtml.contains(DELETE_SUCCESS)) {
-                Status.SUCCESS
-            } else {
-                Status.FAIL
-            }
+        fun fromJson(json: String): DeleteResponse {
+            return ObjectMapper().readValue(json, DeleteResponse::class.java)
         }
+    }
 }

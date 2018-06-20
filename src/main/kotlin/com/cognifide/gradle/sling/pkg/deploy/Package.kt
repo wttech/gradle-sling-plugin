@@ -8,6 +8,11 @@ class Package private constructor() {
 
     lateinit var definition: Definition
 
+    lateinit var path: String
+
+    val installed: Boolean
+        get() = definition.lastUnpacked != null
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     class Definition {
 
@@ -17,8 +22,13 @@ class Package private constructor() {
 
         lateinit var version: String
 
+        @JsonProperty("jcr:description")
+        var description: String? = null
+
         @JsonProperty("jcr:lastModified")
-        lateinit var modified: String
+        var lastModified: String? = null
+
+        var lastUnpacked: String? = null
 
     }
 

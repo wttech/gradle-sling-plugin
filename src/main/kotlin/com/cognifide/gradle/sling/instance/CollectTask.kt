@@ -17,7 +17,7 @@ open class CollectTask : Zip() {
 
     init {
         group = SlingTask.GROUP
-        description = "Composes CRX package from all CRX packages being satisfied and built."
+        description = "Composes Vault package from all Vault packages being satisfied and built."
 
         classifier = "packages"
         isZip64 = true

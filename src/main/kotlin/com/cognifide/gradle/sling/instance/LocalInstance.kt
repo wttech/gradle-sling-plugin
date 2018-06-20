@@ -1,6 +1,5 @@
 package com.cognifide.gradle.sling.instance
 
-import com.cognifide.gradle.sling.pkg.deploy.ListResponse
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.apache.commons.lang3.builder.EqualsBuilder
@@ -59,11 +58,6 @@ class LocalInstance private constructor() : Instance, Serializable {
     @get:JsonProperty("runModes")
     val runModesString: String
         get() = (runModesDefault + runModes).joinToString(",")
-
-    // TODO caching should be scoped per build, not per instance
-    @Transient
-    @get:JsonIgnore
-    override var packages: ListResponse? = null
 
     override fun toString(): String {
         return "LocalInstance(httpUrl='$httpUrl', user='$user', password='$hiddenPassword', type='$type', debugPort=$debugPort)"

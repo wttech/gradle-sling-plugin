@@ -6,7 +6,7 @@ import com.cognifide.gradle.sling.instance.InstanceSync
 import com.cognifide.gradle.sling.instance.names
 import com.cognifide.gradle.sling.internal.PropertyParser
 import com.cognifide.gradle.sling.pkg.PackagePlugin
-import com.cognifide.gradle.sling.pkg.deploy.ListResponse
+import com.cognifide.gradle.sling.pkg.deploy.Package
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
@@ -49,13 +49,13 @@ class ProjectDumper(@Transient val project: Project) {
                 "dir" to project.projectDir.absolutePath
         )
 
-    val packageProperties: Map<String, ListResponse.Package?>
+    val packageProperties: Map<String, Package?>
         get() = if (!project.plugins.hasPlugin(PackagePlugin.ID) || !config.debugPackageDeployed || config.instances.isEmpty()) {
             mapOf()
         } else {
             logger.info("Determining package states on instances: ${config.instances.values.names}")
 
-            mutableMapOf<String, ListResponse.Package?>().apply {
+            mutableMapOf<String, Package?>().apply {
                 config.instances.entries.parallelStream().forEach { (name, instance) ->
                     try {
                         put(name, InstanceSync(project, instance).determineRemotePackage())

@@ -17,7 +17,7 @@ open class PrepareTask : SlingDefaultTask() {
     val vaultDir = SlingTask.temporaryDir(project, NAME, PackagePlugin.VLT_PATH)
 
     init {
-        description = "Prepare Vault files before composing CRX package"
+        description = "Prepare Vault files before composing Vault package"
 
         project.afterEvaluate {
             config.vaultFilesDirs.forEach { dir -> inputs.dir(dir) }

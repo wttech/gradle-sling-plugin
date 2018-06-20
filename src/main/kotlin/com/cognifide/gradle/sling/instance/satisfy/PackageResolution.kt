@@ -32,11 +32,11 @@ class PackageResolution(group: PackageGroup, id: String, action: (FileResolution
         val pkgName = jar.nameWithoutExtension
         val pkg = File(dir, "$pkgName.zip")
         if (pkg.exists()) {
-            logger.info("CRX package wrapping OSGi bundle already exists: $pkg")
+            logger.info("Vault package wrapping OSGi bundle already exists: $pkg")
             return pkg
         }
 
-        logger.info("Wrapping OSGi bundle to CRX package: $jar")
+        logger.info("Wrapping OSGi bundle to Vault package: $jar")
 
         val pkgRoot = File(dir, pkgName)
         val pkgPath = "${config.satisfyBundlePath}/${jar.name}"
@@ -76,7 +76,7 @@ class PackageResolution(group: PackageGroup, id: String, action: (FileResolution
         GFileUtils.mkdirs(pkgJar.parentFile)
         FileUtils.copyFile(jar, pkgJar)
 
-        // ZIP all to CRX package
+        // ZIP all to Vault package
         ZipUtil.pack(pkgRoot, pkg)
         pkgRoot.deleteRecursively()
 

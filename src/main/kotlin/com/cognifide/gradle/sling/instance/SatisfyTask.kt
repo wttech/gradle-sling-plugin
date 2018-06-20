@@ -2,10 +2,10 @@ package com.cognifide.gradle.sling.instance
 
 import com.cognifide.gradle.sling.api.SlingDefaultTask
 import com.cognifide.gradle.sling.api.SlingTask
+import com.cognifide.gradle.sling.pkg.deploy.Package
 import com.cognifide.gradle.sling.instance.satisfy.PackageGroup
 import com.cognifide.gradle.sling.instance.satisfy.PackageResolver
 import com.cognifide.gradle.sling.internal.Patterns
-import com.cognifide.gradle.sling.pkg.deploy.ListResponse
 import groovy.lang.Closure
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
@@ -81,8 +81,8 @@ open class SatisfyTask : SlingDefaultTask() {
             var anyPackageSatisfied = false
 
             packageGroup.instances.sync(project, { sync ->
-                val packageStates = packageGroup.files.fold(mutableMapOf<File, ListResponse.Package?>(), { states, pkg ->
-                    states[pkg] = sync.determineRemotePackage(pkg, config.satisfyRefreshing); states
+                val packageStates = packageGroup.files.fold(mutableMapOf<File, Package?>(), { states, pkg ->
+                    states[pkg] = sync.determineRemotePackage(pkg); states
                 })
                 val anyPackageSatisfiable = packageStates.any {
                     sync.isSnapshot(it.key) || it.value == null || !it.value!!.installed

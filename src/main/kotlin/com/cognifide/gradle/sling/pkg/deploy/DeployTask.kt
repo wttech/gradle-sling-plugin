@@ -13,7 +13,7 @@ open class DeployTask : SlingDefaultTask() {
     }
 
     init {
-        description = "Deploys CRX package on instance(s). Upload then install (and optionally activate)."
+        description = "Deploys Vault package on instance(s). Upload then install (and optionally activate)."
     }
 
     @TaskAction

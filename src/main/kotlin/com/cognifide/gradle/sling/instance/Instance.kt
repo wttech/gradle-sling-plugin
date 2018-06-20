@@ -4,7 +4,6 @@ import com.cognifide.gradle.sling.api.SlingConfig
 import com.cognifide.gradle.sling.api.SlingException
 import com.cognifide.gradle.sling.internal.Formats
 import com.cognifide.gradle.sling.internal.Patterns
-import com.cognifide.gradle.sling.pkg.deploy.ListResponse
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.gradle.api.Project
 import java.io.Serializable
@@ -211,9 +210,6 @@ interface Instance : Serializable {
             throw SlingException("Type cannot be blank in $this")
         }
     }
-
-    @get:JsonIgnore
-    var packages: ListResponse?
 
 }
 

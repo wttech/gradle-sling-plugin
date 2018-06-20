@@ -31,8 +31,8 @@ open class ResolveTask : SlingDefaultTask() {
             logger.info("Resolved instance files: ${createTask.instanceFiles}")
         }
         if (premature || isTaskExecuted(SatisfyTask.NAME)) {
-            logger.info("Resolving CRX packages for satisfying instances.")
-            logger.info("Resolved CRX packages: ${satisfyTask.allFiles}")
+            logger.info("Resolving Vault packages for satisfying instances.")
+            logger.info("Resolved Vault packages: ${satisfyTask.allFiles}")
         }
     }
 

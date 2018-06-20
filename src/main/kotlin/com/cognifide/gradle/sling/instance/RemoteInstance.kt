@@ -1,7 +1,5 @@
 package com.cognifide.gradle.sling.instance
 
-import com.cognifide.gradle.sling.pkg.deploy.ListResponse
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import java.io.Serializable
@@ -17,10 +15,6 @@ class RemoteInstance private constructor() : Instance, Serializable {
     override lateinit var environment: String
 
     override var type: String = Instance.TYPE_DEFAULT
-
-    @Transient
-    @get:JsonIgnore
-    override var packages: ListResponse? = null
 
     override fun toString(): String {
         return "RemoteInstance(httpUrl='$httpUrl', user='$user', password='$hiddenPassword', environment='$environment', type='$type')"

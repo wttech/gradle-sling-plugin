@@ -13,7 +13,7 @@ open class UploadTask : SlingDefaultTask() {
     }
 
     init {
-        description = "Uploads CRX package to instance(s)."
+        description = "Uploads Vault package to instance(s)."
     }
 
     @TaskAction

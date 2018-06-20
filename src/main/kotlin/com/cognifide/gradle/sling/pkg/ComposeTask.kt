@@ -83,7 +83,7 @@ open class ComposeTask : Zip(), SlingTask {
                     }
 
                     if (!isBundle) {
-                        logger.warn("Jar being a part of composed CRX package is not a valid OSGi bundle: $bundle")
+                        logger.warn("Jar being a part of composed Vault package is not a valid OSGi bundle: $bundle")
                         fileDetail.exclude()
                     }
                 }
@@ -118,7 +118,7 @@ open class ComposeTask : Zip(), SlingTask {
     )
 
     init {
-        description = "Composes CRX package from JCR content and built OSGi bundles"
+        description = "Composes Vault package from JCR content and built OSGi bundles"
         group = SlingTask.GROUP
 
         baseName = config.packageName

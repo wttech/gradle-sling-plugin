@@ -14,7 +14,7 @@ open class PurgeTask : SlingDefaultTask() {
     }
 
     init {
-        description = "Uninstalls and then deletes CRX package on Sling instance(s)."
+        description = "Uninstalls and then deletes Vault package on Sling instance(s)."
     }
 
     @TaskAction

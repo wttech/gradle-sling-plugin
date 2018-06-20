@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Aggregated collection of Sling related configuration.
  *
- * Content paths which are used to compose a CRX package are being processed by copy task,
+ * Content paths which are used to compose a Vault package are being processed by copy task,
  * which automatically mark them as inputs so package is being rebuild on any JCR content or Vault files change.
  *
  * TODO https://docs.gradle.org/4.6/userguide/custom_tasks.html#sec:declaring_and_using_command_line_options
@@ -57,13 +57,13 @@ class SlingConfig(
     var instances: MutableMap<String, Instance> = mutableMapOf()
 
     /**
-     * Determines instances involved in CRX package deployment (filters preconfigured instances).
+     * Determines instances involved in Vault package deployment (filters preconfigured instances).
      */
     @Input
     var instanceName: String = props.string("sling.instance.name", "$environment-*")
 
     /**
-     * Forces instances involved in e.g CRX package deployment (uses explicit instances configuration).
+     * Forces instances involved in e.g Vault package deployment (uses explicit instances configuration).
      */
     @Input
     var instanceList: String = props.string("sling.instance.list", "")
@@ -82,14 +82,14 @@ class SlingConfig(
     var instanceConnectionUntrustedSsl: Boolean = props.boolean("sling.instance.connectionUntrustedSsl", true)
 
     /**
-     * Absolute path to JCR content to be included in CRX package.
+     * Absolute path to JCR content to be included in Vault package.
      * Must be absolute or relative to current working directory.
      */
     @Input
     var contentPath: String = "${project.file("src/main/content")}"
 
     /**
-     * Content path for bundle jars being placed in CRX package.
+     * Content path for bundle jars being placed in Vault package.
      */
     @Input
     var bundlePath: String = if (project == project.rootProject) {
@@ -162,7 +162,7 @@ class SlingConfig(
         get() = pkg(project).archiveName
 
     /**
-     * Determines built CRX package name (visible in package manager).
+     * Determines built Vault package name (visible in package manager).
      */
     @Input
     var packageName: String = if (projectNameUnique) {
@@ -172,14 +172,14 @@ class SlingConfig(
     }
 
     /**
-     * CRX package name conventions (with wildcard) indicating that package can change over time
-     * while having same version specified. Affects CRX packages composed  and satisfied.
+     * Vault package name conventions (with wildcard) indicating that package can change over time
+     * while having same version specified. Affects Vault packages composed  and satisfied.
      */
     @Input
     var packageSnapshots: List<String> = props.list("sling.package.snapshots")
 
     /**
-     * Defines behavior for access control handling included in rep:policy nodes being a part of CRX package content.
+     * Defines behavior for access control handling included in rep:policy nodes being a part of Vault package content.
      *
      * @see <https://jackrabbit.apache.org/filevault/apidocs/org/apache/jackrabbit/vault/fs/io/AccessControlHandling.html>
      */
@@ -187,7 +187,7 @@ class SlingConfig(
     var packageAcHandling: String = props.string("sling.package.acHandling", "merge_preserve")
 
     /**
-     * Custom path to composed CRX package being uploaded.
+     * Custom path to composed Vault package being uploaded.
      *
      * Default: [automatically determined]
      */
@@ -195,7 +195,7 @@ class SlingConfig(
     var packageLocalPath: String = ""
 
     /**
-     * Custom path to CRX package that is uploaded on Sling instance.
+     * Custom path to Vault package that is uploaded on Sling instance.
      *
      * Default: [automatically determined]
      */
@@ -209,14 +209,14 @@ class SlingConfig(
     var packageFilesExpanded: MutableList<String> = mutableListOf("**/${PackagePlugin.VLT_PATH}/*.xml")
 
     /**
-     * Define here custom properties that can be used in CRX package files like 'META-INF/vault/properties.xml'.
+     * Define here custom properties that can be used in Vault package files like 'META-INF/vault/properties.xml'.
      * Could override predefined properties provided by plugin itself.
      */
     @Input
     var packageFileProperties: MutableMap<String, Any> = mutableMapOf()
 
     /**
-     * Exclude files being a part of CRX package.
+     * Exclude files being a part of Vault package.
      */
     @Input
     var packageFilesExcluded: MutableList<String> = mutableListOf(
@@ -249,7 +249,7 @@ class SlingConfig(
     var packageSkipDownloadName = props.boolean("sling.package.skipDownloadName", true)
 
     /**
-     * Force upload CRX package regardless if it was previously uploaded.
+     * Force upload Vault package regardless if it was previously uploaded.
      */
     @Input
     var uploadForce: Boolean = props.boolean("sling.upload.force", true)
@@ -286,7 +286,7 @@ class SlingConfig(
     var vaultCopyMissingFiles: Boolean = true
 
     /**
-     * Custom path to Vault files that will be used to build CRX package.
+     * Custom path to Vault files that will be used to build Vault package.
      * Useful to share same files for all packages, like package thumbnail.
      * Must be absolute or relative to current working directory.
      */
@@ -423,23 +423,14 @@ class SlingConfig(
     var reloadDelay: Long = props.long("sling.reload.delay", TimeUnit.SECONDS.toMillis(3))
 
     /**
-     * Satisfy is a lazy task, which means that it will not install package that is already installed.
-     * By default, information about currently installed packages is being retrieved from Sling only once.
-     *
-     * This flag can change that behavior, so that information will be refreshed after each package installation.
-     */
-    @Input
-    var satisfyRefreshing: Boolean = props.boolean("sling.satisfy.refreshing", false)
-
-    /**
-     * Satisfy handles plain OSGi bundle JAR's deployment by automatic wrapping to CRX package.
+     * Satisfy handles plain OSGi bundle JAR's deployment by automatic wrapping to Vault package.
      * This path determines a path in JCR repository in which such bundles will be deployed on Sling.
      */
     @Input
     var satisfyBundlePath: String = props.string("sling.satisfy.bundlePath", "/apps/gradle-sling-plugin/satisfy/install")
 
     /**
-     * A hook which could be used to override default properties used to generate a CRX package from OSGi bundle.
+     * A hook which could be used to override default properties used to generate a Vault package from OSGi bundle.
      */
     @Internal
     @get:JsonIgnore
@@ -469,7 +460,7 @@ class SlingConfig(
      * to avoid checking out too much content.
      *
      * As a fallback there will be used 'filter.xml' file. In that case same file will be used
-     * to build CRX package and checkout JCR content from running instance.
+     * to build Vault package and checkout JCR content from running instance.
      */
     @get:Internal
     @get:JsonIgnore
@@ -611,7 +602,7 @@ class SlingConfig(
     }
 
     /**
-     * CRX package Vault files will be composed from given sources.
+     * Vault package Vault files will be composed from given sources.
      * Missing files required by package within installation will be auto-generated if 'vaultCopyMissingFiles' is enabled.
      */
     @get:Internal
@@ -627,7 +618,7 @@ class SlingConfig(
         }
 
     /**
-     * CRX package Vault files path.
+     * Vault package Vault files path.
      */
     @get:Internal
     @get:JsonIgnore
@@ -635,7 +626,7 @@ class SlingConfig(
         get() = "$contentPath/${PackagePlugin.VLT_PATH}"
 
     /**
-     * CRX package Vault filter path.
+     * Vault package Vault filter path.
      */
     @get:Internal
     @get:JsonIgnore

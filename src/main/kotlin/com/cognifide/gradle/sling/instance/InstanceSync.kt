@@ -169,10 +169,12 @@ class InstanceSync(val project: Project, val instance: Instance) {
         return builder.build()
     }
 
-    fun determineRemotePackage(): ListResponse.Package? {
-        return resolveRemotePackage({ response ->
-            response.resolvePackage(project, ListResponse.Package(project))
-        }, true)
+    fun determineRemotePackage(): Package? {
+        val group = project.group.toString()
+        val name = SlingConfig.of(project).packageName
+        val version = project.version.toString()
+
+        return resolveRemotePackage(group, name, version)
     }
 
     fun determineRemotePackagePath(): String {
@@ -186,9 +188,9 @@ class InstanceSync(val project: Project, val instance: Instance) {
         return pkg.path
     }
 
-    fun determineRemotePackage(file: File, refresh: Boolean = true): ListResponse.Package? {
+    fun determineRemotePackage(file: File): Package? {
         if (!ZipUtil.containsEntry(file, PackagePlugin.VLT_PROPERTIES)) {
-            throw DeployException("File is not a valid CRX package: $file")
+            throw DeployException("File is not a valid Vault package: $file")
         }
 
         val xml = ZipUtil.unpackEntry(file, PackagePlugin.VLT_PROPERTIES).toString(Charsets.UTF_8)
@@ -198,24 +200,24 @@ class InstanceSync(val project: Project, val instance: Instance) {
         val name = doc.select("entry[key=name]").text()
         val version = doc.select("entry[key=version]").text()
 
-        return resolveRemotePackage({ response ->
-            response.resolvePackage(project, ListResponse.Package(group, name, version))
-        }, refresh)
+        return resolveRemotePackage(group, name, version)
     }
 
-    private fun resolveRemotePackage(resolver: (ListResponse) -> ListResponse.Package?, refresh: Boolean): ListResponse.Package? {
-        logger.debug("Asking Sling for uploaded packages using URL: '$listPackagesUrl'")
+    private fun resolveRemotePackage(group: String, name: String, version: String): Package? {
+        val url = "${instance.httpUrl}/bin/cpm/package.tree.json/$group"
 
-        if (instance.packages == null || refresh) {
-            val json = postMultipart(listPackagesUrl)
-            instance.packages = try {
-                ListResponse.fromJson(json)
-            } catch (e: Exception) {
-                throw DeployException("Cannot ask Sling for uploaded packages!", e)
-            }
+        logger.debug("Asking for uploaded packages using URL: '$url'")
+        val packages = try {
+            PackageTreeResponse.fromJson(get(url)).packages
+        } catch (e: Exception) {
+            throw DeployException("Cannot determine remote package!", e)
         }
 
-        return resolver(instance.packages!!)
+        return packages.find { pkg ->
+            pkg.definition.let { def ->
+                def.group == group && def.name == name && def.version == version
+            }
+        }
     }
 
     fun uploadPackage(file: File): PackageResponse {

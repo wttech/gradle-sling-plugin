@@ -19,6 +19,7 @@ Incremental build which takes seconds, not minutes. Developer who does not loose
 Sling developer - it's time to meet Gradle! You liked or used plugin? Don't forget to **star this project** on GitHub :)
 
 ---
+
 **IMPORTANT**
 
 This project is a fork of [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
@@ -26,6 +27,7 @@ This project is a fork of [Gradle AEM Plugin](https://github.com/Cognifide/gradl
 Almost all of its concepts are applicable to pure Sling so that all of features of GAP 4.x.x are available in GSP.
 The maintenance and synchronization of two separate plugins may be exhausting, so that any **volunteers** that will take care about this fork are appreciated.
 Generally to keep documentation up to date and occasionally transfer code from GAP to GSP and vice versa.
+
 ---
 
 ## License

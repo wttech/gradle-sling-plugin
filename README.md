@@ -20,8 +20,6 @@ Sling developer - it's time to meet Gradle! You liked or used plugin? Don't forg
 
 ---
 
-**IMPORTANT**
-
 This project is a fork of [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
 
 Almost all of its concepts are applicable to pure Sling so that all of features of GAP 4.x.x are available in GSP.

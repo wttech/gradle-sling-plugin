@@ -18,15 +18,29 @@ Incremental build which takes seconds, not minutes. Developer who does not loose
 
 Sling developer - it's time to meet Gradle! You liked or used plugin? Don't forget to **star this project** on GitHub :)
 
----
 
-This project is a fork of [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
+## Documentation
+
+This project is a **fork** of [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
 
 Almost all of its concepts are applicable to pure Sling so that all of features of GAP 4.x.x are available in GSP.
 The maintenance and synchronization of two separate plugins may be exhausting, so that any **volunteers** that will take care about this fork are appreciated.
 Generally to keep documentation up to date and occasionally transfer code from GAP to GSP and vice versa.
 
----
+For now, just consider mapping word **aem** to **sling** while reading GAP documentation to be able to start work on GSP.
+This is also applicable to build script, for instance:
+
+```groovy
+sling {
+    config {
+        bundlePath = '/apps/example/install'
+        contentPath = file('src/main/content')
+        // ...
+    }
+}
+```
+
+Task names also have just analogical prefix: `slingDeploy`, `slingSatisfy` etc.
 
 ## License
 

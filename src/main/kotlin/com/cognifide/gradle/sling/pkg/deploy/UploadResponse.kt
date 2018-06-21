@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 class UploadResponse : PackageResponse() {
 
     override val success: Boolean
-        get() =  (operation == "upload" && status == "done")
+        get() =  (operation == "upload" && status == "successful")
 
     @JsonProperty("package")
     lateinit var pkg: Package

@@ -13,7 +13,7 @@ class DeleteResponse private constructor() {
     lateinit var path: String
 
     val success: Boolean
-        get() = (operation == "uninstallation" && status == "done")
+        get() = (operation == "delete" && status == "successful")
 
     companion object {
         fun fromJson(json: String): DeleteResponse {

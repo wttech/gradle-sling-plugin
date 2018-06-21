@@ -62,12 +62,20 @@ class InstanceSync(val project: Project, val instance: Instance) {
         return fetch(HttpGet(normalizeUrl(url)))
     }
 
+    fun head(url: String): String {
+        return fetch(HttpHead(normalizeUrl(url)))
+    }
+
     fun delete(url: String): String {
         return fetch(HttpDelete(normalizeUrl(url)))
     }
 
     fun put(url: String): String {
         return fetch(HttpPut(normalizeUrl(url)))
+    }
+
+    fun patch(url: String): String {
+        return fetch(HttpPatch(normalizeUrl(url)))
     }
 
     fun postUrlencoded(url: String, params: Map<String, Any> = mapOf()): String {
@@ -98,7 +106,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
                 return@execute body
             } else {
                 logger.debug(body)
-                throw DeployException("Unexpected instance response: ${response.statusLine}")
+                throw DeployException("Unexpected response from $instance: ${response.statusLine}")
             }
         })
     }
@@ -114,7 +122,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
 
             return success(response)
         } catch (e: Exception) {
-            throw DeployException("Failed instance request: ${e.message}", e)
+            throw DeployException("Failed request to $instance: ${e.message}", e)
         } finally {
             method.releaseConnection()
         }
@@ -186,7 +194,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
         }
 
         val pkg = determineRemotePackage()
-                ?: throw DeployException("Package is not uploaded on Sling instance.")
+                ?: throw DeployException("Package is not uploaded on $instance.")
 
         return pkg.path
     }
@@ -210,17 +218,14 @@ class InstanceSync(val project: Project, val instance: Instance) {
         val url = "${instance.httpUrl}/bin/cpm/package.list.json"
 
         logger.debug("Asking for uploaded packages using URL: '$url'")
+
         val packages = try {
             ListResponse.fromJson(get(url))
         } catch (e: Exception) {
-            throw DeployException("Cannot determine remote package!", e)
+            throw DeployException("Malformed response after listing packages on instance $instance.", e)
         }
 
-        return packages.find { pkg ->
-            pkg.definition.let { def ->
-                def.group == group && def.name == name && def.version == version
-            }
-        }
+        return packages.find { it.definition.check(group, name, version) }
     }
 
     fun uploadPackage(file: File): PackageResponse {
@@ -232,7 +237,8 @@ class InstanceSync(val project: Project, val instance: Instance) {
                 exception = e
 
                 if (i < config.uploadRetryTimes) {
-                    logger.warn("Cannot upload package to $instance.")
+                    logger.warn("Cannot upload package $file to $instance.")
+                    logger.debug("Upload error", e)
 
                     val header = "Retrying upload (${i + 1}/${config.uploadRetryTimes}) after delay."
                     val countdown = ProgressCountdown(project, header, config.uploadRetryDelay)
@@ -255,29 +261,34 @@ class InstanceSync(val project: Project, val instance: Instance) {
                     "force" to (config.uploadForce || isSnapshot(file))
             ))
         } catch (e: FileNotFoundException) {
-            throw DeployException(String.format("Package file '%s' not found!", file.path), e)
+            throw DeployException("Package file $file to be uploaded not found!", e)
         } catch (e: Exception) {
-            throw DeployException("Cannot upload package.", e)
+            throw DeployException("Cannot upload package $file to instance $instance. Reason: request failed.", e)
         }
 
-        val response = UploadResponse.fromJson(json)
+        val response = try {
+            UploadResponse.fromJson(json)
+        } catch (e: Exception) {
+            throw DeployException("Malformed response after uploading package $file to instance $instance.", e)
+        }
+
         if (!response.success) {
-            throw DeployException("Upload ended with status: ${response.status}")
+            throw DeployException("Cannot upload package $file to $instance. Reason: ${response.status}.")
         }
 
         return response
-
     }
 
-    fun installPackage(uploadedPackagePath: String): PackageResponse {
+    fun installPackage(remotePath: String): PackageResponse {
         lateinit var exception: DeployException
         for (i in 0..config.installRetryTimes) {
             try {
-                return installPackageOnce(uploadedPackagePath)
+                return installPackageOnce(remotePath)
             } catch (e: DeployException) {
                 exception = e
                 if (i < config.installRetryTimes) {
-                    logger.warn("Cannot install package on $instance.")
+                    logger.warn("Cannot install package $remotePath on $instance.")
+                    logger.debug("Install error", e)
 
                     val header = "Retrying install (${i + 1}/${config.installRetryTimes}) after delay."
                     val countdown = ProgressCountdown(project, header, config.installRetryDelay)
@@ -289,19 +300,25 @@ class InstanceSync(val project: Project, val instance: Instance) {
         throw exception
     }
 
-    fun installPackageOnce(uploadedPackagePath: String): PackageResponse {
+    fun installPackageOnce(remotePath: String): PackageResponse {
         val url = "${instance.httpUrl}/bin/cpm/package.install.json"
 
         logger.info("Installing package using command: $url")
 
         val json = try {
-            postUrlencoded(url, mapOf("path" to uploadedPackagePath))
+            postUrlencoded(url, mapOf("path" to remotePath))
         } catch (e: Exception) {
-            throw DeployException("Cannot install package.", e)
+            throw DeployException("Cannot install package. Reason: request failed.", e)
         }
-        val response = InstallResponse.fromJson(json)
+
+        val response = try {
+            InstallResponse.fromJson(json)
+        } catch (e: Exception) {
+            throw DeployException("Malformed response after installing package $remotePath on $instance.", e)
+        }
+
         if (!response.success) {
-            throw DeployException("Install ended with status: ${response.status}")
+            throw DeployException("Cannot install package. Reason: ${response.status}.")
         }
 
         return response
@@ -315,39 +332,49 @@ class InstanceSync(val project: Project, val instance: Instance) {
         installPackage(uploadPackage(file).path)
     }
 
-    fun deletePackage(path: String): DeleteResponse {
-        val url = "${instance.httpUrl}/bin/cpm/package.delete.json?path=$path"
+    fun deletePackage(remotePath: String): DeleteResponse {
+        val url = "${instance.httpUrl}/bin/cpm/package.delete.json?path=$remotePath"
 
         logger.info("Deleting package using command: $url")
 
         val json = try {
             delete(url)
         } catch (e: Exception) {
-            throw DeployException("Cannot delete package.", e)
+            throw DeployException("Cannot delete package $remotePath from $instance. Reason: request failed.", e)
         }
 
-        val response = DeleteResponse.fromJson(json)
+        val response = try {
+            DeleteResponse.fromJson(json)
+        } catch (e: Exception) {
+            throw DeployException("Malformed response after deleting package $remotePath from $instance.", e)
+        }
+
         if (!response.success) {
-            throw DeployException("Uninstall ended with status: ${response.status}")
+            throw DeployException("Cannot delete package $remotePath from $instance. Reason: ${response.status}")
         }
 
         return response
     }
 
-    fun uninstallPackage(installedPackagePath: String): PackageResponse {
+    fun uninstallPackage(remotePath: String): PackageResponse {
         val url = "${instance.httpUrl}/bin/cpm/package.uninstall.json"
 
         logger.info("Uninstalling package using command: $url")
 
         val json = try {
-            postUrlencoded(url, mapOf("path" to installedPackagePath))
+            postUrlencoded(url, mapOf("path" to remotePath))
         } catch (e: Exception) {
-            throw DeployException("Cannot uninstall package.", e)
+            throw DeployException("Cannot uninstall package $remotePath from $instance. Reason: request failed.", e)
         }
 
-        val response = UninstallResponse.fromJson(json)
+        val response = try {
+            UninstallResponse.fromJson(json)
+        } catch (e: Exception) {
+            throw DeployException("Malformed response after uninstalling package $remotePath from $instance.", e)
+        }
+
         if (!response.success) {
-            throw DeployException("Uninstall ended with status: ${response.status}")
+            throw DeployException("Cannot uninstall package $remotePath from $instance. Reason: ${response.status}.")
         }
 
         return response
@@ -358,7 +385,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
     }
 
     fun determineBundleState(): BundleState {
-        logger.debug("Asking Sling for OSGi bundles using URL: '$bundlesUrl'")
+        logger.debug("Asking for OSGi bundles using URL: '$bundlesUrl'")
 
         return try {
             BundleState.fromJson(get(bundlesUrl))
@@ -369,7 +396,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
     }
 
     fun determineComponentState(): ComponentState {
-        logger.debug("Asking Sling for OSGi components using URL: '$bundlesUrl'")
+        logger.debug("Asking for OSGi components using URL: '$bundlesUrl'")
 
         return try {
             ComponentState.fromJson(get(componentsUrl))
@@ -381,10 +408,10 @@ class InstanceSync(val project: Project, val instance: Instance) {
 
     fun reload() {
         try {
-            logger.info("Triggering instance(s) shutdown")
+            logger.info("Triggering shutdown of $instance")
             postUrlencoded(vmStatUrl, mapOf("shutdown_type" to "Restart"))
         } catch (e: DeployException) {
-            throw InstanceException("Cannot trigger shutdown for instance $instance", e)
+            throw InstanceException("Cannot trigger shutdown of $instance", e)
         }
     }
 

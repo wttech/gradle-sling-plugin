@@ -42,6 +42,11 @@ sling {
 
 Task names also have just analogical prefix: `slingDeploy`, `slingSatisfy` etc.
 
+## Installation
+
+1. Build plugin locally using command `sh gradlew`.
+2. Fork example project using quickstart localed in [Gradle Sling Single](https://github.com/Cognifide/gradle-sling-single).
+
 ## License
 
 **Gradle Sling Plugin** is licensed under the [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)

@@ -82,7 +82,7 @@ open class SatisfyTask : SlingDefaultTask() {
 
             packageGroup.instances.sync(project, { sync ->
                 val packageStates = packageGroup.files.fold(mutableMapOf<File, Package?>(), { states, pkg ->
-                    states[pkg] = sync.determineRemotePackage(pkg); states
+                    states[pkg] = sync.determineRemotePackage(pkg, config.satisfyRefreshing); states
                 })
                 val anyPackageSatisfiable = packageStates.any {
                     sync.isSnapshot(it.key) || it.value == null || !it.value!!.installed

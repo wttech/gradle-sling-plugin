@@ -95,6 +95,7 @@
       "awaitHealthRetryTimes": 5,
       "awaitHealthRetryDelay": 15000,
       "reloadDelay": 3000,
+      "satisfyRefreshing": false,
       "satisfyBundlePath": "/apps/gradle-sling-plugin/satisfy/install",
       "satisfyGroupName": "*",
       "checkoutFilterPath": "",

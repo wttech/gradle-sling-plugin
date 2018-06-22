@@ -1,6 +1,7 @@
 package com.cognifide.gradle.sling.instance
 
 import com.cognifide.gradle.sling.api.SlingConfig
+import com.cognifide.gradle.sling.internal.BuildCache
 import com.cognifide.gradle.sling.internal.Patterns
 import com.cognifide.gradle.sling.internal.ProgressCountdown
 import com.cognifide.gradle.sling.internal.http.PreemptiveAuthInterceptor
@@ -199,7 +200,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
         return pkg.path
     }
 
-    fun determineRemotePackage(file: File): Package? {
+    fun determineRemotePackage(file: File, refresh: Boolean = true): Package? {
         if (!ZipUtil.containsEntry(file, PackagePlugin.VLT_PROPERTIES)) {
             throw DeployException("File is not a valid Vault package: $file")
         }
@@ -211,19 +212,21 @@ class InstanceSync(val project: Project, val instance: Instance) {
         val name = doc.select("entry[key=name]").text()
         val version = doc.select("entry[key=version]").text()
 
-        return resolveRemotePackage(group, name, version)
+        return resolveRemotePackage(group, name, version, refresh)
     }
 
-    private fun resolveRemotePackage(group: String, name: String, version: String): Package? {
-        val url = "${instance.httpUrl}/bin/cpm/package.list.json"
+    private fun resolveRemotePackage(group: String, name: String, version: String, refresh: Boolean = true): Package? {
+        val packages: List<Package> = BuildCache.of(project).getOrPut("${instance.name}.packages", {
+            val url = "${instance.httpUrl}/bin/cpm/package.list.json"
 
-        logger.debug("Asking for uploaded packages using URL: '$url'")
+            logger.debug("Asking for uploaded packages using URL: '$url'")
 
-        val packages = try {
-            ListResponse.fromJson(get(url))
-        } catch (e: Exception) {
-            throw DeployException("Malformed response after listing packages on instance $instance.", e)
-        }
+            try {
+                ListResponse.fromJson(get(url))
+            } catch (e: Exception) {
+                throw DeployException("Malformed response after listing packages on instance $instance.", e)
+            }
+        }, refresh)
 
         return packages.find { it.definition.check(group, name, version) }
     }

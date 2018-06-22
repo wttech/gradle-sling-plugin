@@ -423,6 +423,16 @@ class SlingConfig(
     var reloadDelay: Long = props.long("sling.reload.delay", TimeUnit.SECONDS.toMillis(3))
 
     /**
+     * Satisfy is a lazy task, which means that it will not install package that is already installed.
+     * By default, information about currently installed packages is being retrieved from instance only once.
+     *
+     * This flag can change that behavior, so that information will be refreshed after each package installation.
+     */
+    @Input
+    var satisfyRefreshing: Boolean = props.boolean("sling.satisfy.refreshing", false)
+
+
+    /**
      * Satisfy handles plain OSGi bundle JAR's deployment by automatic wrapping to Vault package.
      * This path determines a path in JCR repository in which such bundles will be deployed on Sling.
      */

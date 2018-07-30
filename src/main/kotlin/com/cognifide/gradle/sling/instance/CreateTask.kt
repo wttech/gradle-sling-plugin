@@ -18,7 +18,7 @@ open class CreateTask : SlingDefaultTask() {
 
         const val JAR_URL_PROP = "sling.instance.local.jarUrl"
 
-        const val JAR_URL_DEFAULT = "http://www-us.apache.org/dist/sling/org.apache.sling.starter-10.jar"
+        const val JAR_URL_DEFAULT = "https://github.com/Cognifide/gradle-sling-plugin/releases/download/downloads/org.apache.sling.starter.jar"
     }
 
     @Internal

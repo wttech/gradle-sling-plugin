@@ -8,7 +8,7 @@ pluginManagement {
 	resolutionStrategy {
 		eachPlugin {
 			if (requested.id.namespace == 'com.cognifide.sling') {
-				useModule('com.cognifide.gradle:sling-plugin:1.0.0')
+				useModule('com.cognifide.gradle:sling-plugin:4.1.0')
 			}
 		}
 	}

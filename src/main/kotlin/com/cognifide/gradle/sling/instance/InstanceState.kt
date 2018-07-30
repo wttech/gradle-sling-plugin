@@ -132,7 +132,7 @@ class InstanceState(private var _sync: InstanceSync, val instance: Instance) {
 
         val PLATFORM_COMPONENTS = setOf(
                 "com.composum.sling.core.pckgmgr.*",
-                "org.apache.sling.installer.*"
+                "org.apache.sling.installer.provider.*"
         )
     }
 

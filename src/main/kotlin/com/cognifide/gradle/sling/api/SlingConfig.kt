@@ -325,7 +325,7 @@ class SlingConfig(
 
     /**
      * Path from which extra files for local Sling instances will be copied.
-     * Useful for overriding default startup scripts ('start.bat' or 'start.sh') or providing some files inside 'crx-quickstart'.
+     * Useful for overriding default startup scripts ('start.bat' or 'start.sh') or providing some files inside 'sling' folder.
      */
     @Input
     var createFilesPath: String = project.rootProject.file("src/main/resources/${InstancePlugin.FILES_PATH}").toString()

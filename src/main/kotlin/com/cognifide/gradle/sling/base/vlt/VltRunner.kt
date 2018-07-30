@@ -48,7 +48,7 @@ class VltRunner(val project: Project) {
         }
 
         checkoutFilter.use {
-            raw("--credentials ${checkoutInstance.credentials} checkout --force --filter ${checkoutFilter.file.absolutePath} ${checkoutInstance.httpUrl}/crx/server/crx.default")
+            raw("--credentials ${checkoutInstance.credentials} checkout --force --filter ${checkoutFilter.file.absolutePath} ${checkoutInstance.httpUrl}/server/default")
         }
     }
 

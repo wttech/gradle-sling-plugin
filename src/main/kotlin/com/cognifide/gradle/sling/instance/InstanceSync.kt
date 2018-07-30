@@ -256,7 +256,7 @@ class InstanceSync(val project: Project, val instance: Instance) {
     fun uploadPackageOnce(file: File): PackageResponse {
         val url = "${instance.httpUrl}/bin/cpm/package.upload.json"
 
-        logger.info("Uploading package at path '{}' to URL '{}'", file.path, url)
+        logger.info("Uploading package at path '{}' using URL '{}'", file.path, url)
 
         val json = try {
             postMultipart(url, mapOf(
@@ -410,12 +410,28 @@ class InstanceSync(val project: Project, val instance: Instance) {
     }
 
     fun reload() {
+        shutdown(VMSTAT_SHUTDOWN_RESTART)
+    }
+
+    fun stop() {
+        shutdown(VMSTAT_SHUTDOWN_STOP)
+    }
+
+    private fun shutdown(type: String) {
         try {
-            logger.info("Triggering shutdown of $instance")
-            postUrlencoded(vmStatUrl, mapOf("shutdown_type" to "Restart"))
+            logger.info("Triggering shutdown of $instance.")
+            postUrlencoded(vmStatUrl, mapOf("shutdown_type" to type))
         } catch (e: DeployException) {
-            throw InstanceException("Cannot trigger shutdown of $instance", e)
+            throw InstanceException("Cannot trigger shutdown of $instance.", e)
         }
+    }
+
+    companion object {
+
+        private const val VMSTAT_SHUTDOWN_STOP = "Stop"
+
+        private const val VMSTAT_SHUTDOWN_RESTART = "Restart"
+
     }
 
 }

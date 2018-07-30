@@ -15,12 +15,12 @@ open class PurgeTask : SlingDefaultTask() {
 
     init {
         description = "Uninstalls and then deletes Vault package on Sling instance(s)."
+
+        beforeExecuted { props.checkForce() }
     }
 
     @TaskAction
     fun purge() {
-        props.checkForce()
-
         val pkg = config.packageFileName
         val instances = Instance.filter(project)
 

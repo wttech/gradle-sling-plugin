@@ -7,6 +7,7 @@ import com.cognifide.gradle.sling.api.SlingNotifier
 import com.cognifide.gradle.sling.api.SlingTask
 import com.cognifide.gradle.sling.base.vlt.VltFilter
 import com.cognifide.gradle.sling.bundle.BundleCollector
+import com.cognifide.gradle.sling.bundle.BundlePlugin
 import com.cognifide.gradle.sling.internal.Patterns
 import com.cognifide.gradle.sling.internal.PropertyParser
 import com.cognifide.gradle.sling.internal.file.FileContentReader
@@ -63,7 +64,7 @@ open class ComposeTask : Zip(), SlingTask {
             spec.exclude(config.packageFilesExcluded)
         }
 
-        spec.eachFile({ fileDetail ->
+        spec.eachFile { fileDetail ->
             val path = "/${fileDetail.relativePath.pathString.removePrefix("/")}"
 
             if (fileFilterOptions.expanding) {
@@ -88,7 +89,7 @@ open class ComposeTask : Zip(), SlingTask {
                     }
                 }
             }
-        })
+        }
     }
 
     @get:Internal
@@ -130,10 +131,10 @@ open class ComposeTask : Zip(), SlingTask {
         includeVault(vaultDir)
 
         // Evaluate inclusion above and other cross project inclusions
-        project.gradle.projectsEvaluated({
+        project.gradle.projectsEvaluated {
             fromBundles()
             fromContents()
-        })
+        }
 
         doLast { SlingNotifier.of(project).default("Package composed", getArchiveName()) }
     }
@@ -258,7 +259,7 @@ open class ComposeTask : Zip(), SlingTask {
     }
 
     private fun dependProject(project: Project, taskNames: Collection<String>) {
-        val effectiveTaskNames = taskNames.fold(mutableListOf<String>(), { names, name ->
+        val effectiveTaskNames = taskNames.fold(mutableListOf<String>()) { names, name ->
             if (name.endsWith(DEPENDENCIES_SUFFIX)) {
                 val task = project.tasks.getByName(name.substringBeforeLast(DEPENDENCIES_SUFFIX))
                 val dependencies = task.taskDependencies.getDependencies(task).map { it.name }
@@ -269,7 +270,7 @@ open class ComposeTask : Zip(), SlingTask {
             }
 
             names
-        })
+        }
 
         effectiveTaskNames.forEach { taskName ->
             dependsOn("${project.path}:$taskName")
@@ -279,17 +280,17 @@ open class ComposeTask : Zip(), SlingTask {
     private fun extractVaultFilters(project: Project, config: SlingConfig) {
         if (!config.vaultFilterPath.isBlank() && File(config.vaultFilterPath).exists()) {
             filterRoots.addAll(VltFilter(File(config.vaultFilterPath)).rootElements)
-        } else {
+        } else if (project.plugins.hasPlugin(BundlePlugin.ID)) {
             filterRoots.add(VltFilter.rootElement(filterRootDefault(project, config)))
         }
     }
 
     fun includeVault(vltPath: Any) {
         contentCollectors += {
-            into(PackagePlugin.VLT_PATH, { spec ->
+            into(PackagePlugin.VLT_PATH) { spec ->
                 spec.from(vltPath)
                 fileFilter(spec)
-            })
+            }
         }
     }
 

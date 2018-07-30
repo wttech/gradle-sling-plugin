@@ -127,6 +127,17 @@ class BundlePlugin : Plugin<Project> {
 
         jar.doLast {
             try {
+                val config = SlingConfig.of(project)
+                val instructionFile = File(config.bundleBndPath)
+                if (instructionFile.isFile) {
+                    bundleConvention.setBndfile(instructionFile)
+                }
+
+                val instructions = config.bundleBndInstructions
+                if (instructions.isNotEmpty()) {
+                    bundleConvention.bnd(instructions)
+                }
+
                 bundleConvention.buildBundle()
             } catch (e: Exception) {
                 logger.error("BND tool error: https://bnd.bndtools.org", ExceptionUtils.getRootCause(e))

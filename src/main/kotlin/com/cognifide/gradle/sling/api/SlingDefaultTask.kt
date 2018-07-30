@@ -20,4 +20,12 @@ abstract class SlingDefaultTask : DefaultTask(), SlingTask {
         group = SlingTask.GROUP
     }
 
+    fun beforeExecuted(callback: SlingDefaultTask.() -> Unit) {
+        project.gradle.taskGraph.whenReady {
+            if (it.hasTask(this@SlingDefaultTask)) {
+                callback()
+            }
+        }
+    }
+
 }

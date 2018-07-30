@@ -14,12 +14,12 @@ open class UninstallTask : SlingDefaultTask() {
 
     init {
         description = "Uninstalls Sling package on instance(s)."
+
+        beforeExecuted { props.checkForce() }
     }
 
     @TaskAction
     fun uninstall() {
-        props.checkForce()
-
         val instances = Instance.filter(project)
         val pkg = config.packageFileName
 

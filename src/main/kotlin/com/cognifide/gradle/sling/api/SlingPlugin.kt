@@ -20,6 +20,8 @@ class SlingPlugin private constructor() {
                     .bufferedReader().use { it.readText() })
         }
 
+        val ID = "gradle-sling-plugin"
+
         val NAME = "Gradle Sling Plugin"
 
         val NAME_WITH_VERSION: String

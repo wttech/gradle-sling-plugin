@@ -1,6 +1,7 @@
 package com.cognifide.gradle.sling.instance
 
 import com.cognifide.gradle.sling.api.SlingDefaultTask
+import com.cognifide.gradle.sling.instance.action.ShutdownAction
 import org.gradle.api.tasks.TaskAction
 
 open class DownTask : SlingDefaultTask() {
@@ -15,10 +16,11 @@ open class DownTask : SlingDefaultTask() {
 
     @TaskAction
     fun down() {
-        val handles = Instance.handles(project)
-        handles.parallelStream().forEach { it.down() }
+        val instances = Instance.filter(project)
 
-        notifier.default("Instance(s) down", "Which: ${handles.names}")
+        ShutdownAction(project, instances).perform()
+
+        notifier.default("Instance(s) down", "Which: ${instances.names}")
     }
 
 }

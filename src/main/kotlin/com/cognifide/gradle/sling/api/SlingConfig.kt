@@ -4,11 +4,11 @@ import aQute.bnd.osgi.Jar
 import com.cognifide.gradle.sling.instance.*
 import com.cognifide.gradle.sling.internal.LineSeparator
 import com.cognifide.gradle.sling.internal.PropertyParser
+import com.cognifide.gradle.sling.internal.notifier.Notifier
 import com.cognifide.gradle.sling.pkg.ComposeTask
 import com.cognifide.gradle.sling.pkg.PackagePlugin
 import com.cognifide.gradle.sling.pkg.deploy.DeployException
 import com.fasterxml.jackson.annotation.JsonIgnore
-import dorkbox.notify.Notify
 import groovy.lang.Closure
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -127,12 +127,28 @@ class SlingConfig(
     var bundleManifestAttributes: Boolean = true
 
     /**
-     * Bundle configuration file location consumed by BND tool.
+     * Bundle instructions file location consumed by BND tool.
+     *
+     * If file exists, instructions will be taken from it instead of directly specified
+     * in dedicated property.
      *
      * @see <https://bnd.bndtools.org>
      */
     @Input
     var bundleBndPath: String = "${project.file("bnd.bnd")}"
+
+    /**
+     * Bundle instructions consumed by BND tool (still file has precedence).
+     *
+     * By default, plugin is increasing an importance of some warning so that it will
+     * fail a build instead just logging it.
+     *
+     * @see <https://bnd.bndtools.org/chapters/825-instructions-ref.html>
+     */
+    @Input
+    var bundleBndInstructions: MutableMap<String, Any> = mutableMapOf(
+            "-fixupmessages.bundleActivator" to "Bundle-Activator * is being imported *;is:=error"
+    )
 
     /**
      * Automatically determine local package to be uploaded.
@@ -535,10 +551,13 @@ class SlingConfig(
 
     /**
      * Hook for customizing notifications being displayed.
+     *
+     * To customize notification use one of concrete provider methods: 'dorkbox' or 'jcgay' (and optionally pass configuration lambda(s)).
+     * Also it is possible to implement own notifier directly in build script by using provider method 'custom'.
      */
     @Internal
     @JsonIgnore
-    var notificationConfig: (Notify) -> Unit = { it.darkStyle().hideAfter(5000) }
+    var notificationConfig: (SlingNotifier) -> Notifier = { it.factory() }
 
     /**
      * Initialize defaults that depends on concrete type of project.

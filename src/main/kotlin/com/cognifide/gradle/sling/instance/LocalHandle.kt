@@ -46,6 +46,17 @@ class LocalHandle(val project: Project, val instance: Instance) {
     val startScript: Script
         get() = binScript("start")
 
+    // TODO fix it for sling
+    val pidFile: File
+        get() = File("$dir/conf/cq.pid")
+
+    // TODO fix it for Sling
+    val controlPortFile: File
+        get() = File("$dir/conf/controlport")
+
+    val running: Boolean
+        get() = pidFile.exists() && controlPortFile.exists()
+
     val stopScript: Script
         get() = binScript("stop")
 
@@ -59,7 +70,7 @@ class LocalHandle(val project: Project, val instance: Instance) {
 
     fun create(instanceFiles: List<File>) {
         if (created) {
-            logger.info(("Instance already created"))
+            logger.info(("Instance already created: $this"))
             return
         }
 
@@ -129,18 +140,35 @@ class LocalHandle(val project: Project, val instance: Instance) {
     }
 
     fun up() {
+        if (!created) {
+            logger.warn("Instance not created, so it could not be up: $this")
+            return
+        }
+
+
         logger.info("Executing start script: $startScript")
         execute(startScript)
     }
 
     fun down() {
+        if (!created) {
+            logger.warn("Instance not created, so it could not be down: $this")
+            return
+        }
+
         logger.info("Executing stop script: $stopScript")
         execute(stopScript)
+
+        try {
+            sync.stop()
+        } catch (e: InstanceException) {
+            // ignore, fallback when script failed
+        }
     }
 
     fun init() {
         if (initialized) {
-            logger.debug("Instance already initialized")
+            logger.debug("Instance already initialized: $this")
             return
         }
 
@@ -197,5 +225,5 @@ class LocalHandle(val project: Project, val instance: Instance) {
 
 }
 
-val List<LocalHandle>.names: String
-    get() = joinToString(", ") { it.instance.name }
+val List<LocalHandle>.names: String?
+    get() = if (isNotEmpty()) joinToString(", ") { it.instance.name } else "none"

@@ -46,16 +46,8 @@ class LocalHandle(val project: Project, val instance: Instance) {
     val startScript: Script
         get() = binScript("start")
 
-    // TODO fix it for sling
-    val pidFile: File
-        get() = File("$dir/conf/cq.pid")
-
-    // TODO fix it for Sling
-    val controlPortFile: File
-        get() = File("$dir/conf/controlport")
-
     val running: Boolean
-        get() = pidFile.exists() && controlPortFile.exists()
+        get() = File("$dir/conf/controlport").exists()
 
     val stopScript: Script
         get() = binScript("stop")

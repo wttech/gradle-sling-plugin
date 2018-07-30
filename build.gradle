@@ -5,8 +5,8 @@ plugins {
     id 'com.jfrog.bintray' version '1.8.0'
 }
 
-group 'com.cognifide.gradle'
-version '4.1.0'
+group = 'com.cognifide.gradle'
+version = '4.1.0'
 description = 'Gradle Sling Plugin'
 defaultTasks = ['clean', 'build', 'publishToMavenLocal']
 
@@ -101,9 +101,9 @@ bintray {
         vcsUrl = 'https://github.com/Cognifide/gradle-sling-plugin.git'
         labels = ['sling', 'vault', 'scr']
         version {
-            name = project.version
+            name = "${project.version}"
             desc = "${project.description} ${project.version}"
-            vcsTag = project.version
+            vcsTag = "gsp-${project.version}"
         }
     }
     publish = true

@@ -2,7 +2,7 @@ plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '1.2.51'
-    id 'com.jfrog.bintray' version '1.8.0'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 group = 'com.cognifide.gradle'
@@ -90,8 +90,8 @@ test.dependsOn publishToMavenLocal
 check.dependsOn publishToMavenLocal
 
 bintray {
-    user = project.properties.get('bintrayUser') ?: System.getenv('BINTRAY_USER')
-    key = project.properties.get('bintrayKey') ?: System.getenv('BINTRAY_KEY')
+    user = project.properties.get('bintray.user') ?: System.getenv('BINTRAY_USER')
+    key = project.properties.get('bintray.key') ?: System.getenv('BINTRAY_KEY')
     publications = ['mavenJava']
     pkg {
         repo = 'maven-public'
@@ -107,4 +107,6 @@ bintray {
         }
     }
     publish = true
+    dryRun = project.properties["bintray.dryRun"] ?: false
+    override = project.properties["bintray.override"] ?: false
 }

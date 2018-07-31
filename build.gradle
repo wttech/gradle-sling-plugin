@@ -106,7 +106,7 @@ bintray {
             vcsTag = "gsp-${project.version}"
         }
     }
-    publish = true
+    publish = project.properties["bintray.publish"] ?: true
     dryRun = project.properties["bintray.dryRun"] ?: false
     override = project.properties["bintray.override"] ?: false
 }

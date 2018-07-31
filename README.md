@@ -42,10 +42,26 @@ sling {
 
 Task names also have just analogical prefix: `slingDeploy`, `slingSatisfy` etc.
 
-## Installation
+## Getting started
 
-1. Build plugin locally using command `sh gradlew`.
-2. Create own project using quickstart located in [Gradle Sling Single](https://github.com/Cognifide/gradle-sling-single).
+* Most effective way to experience Gradle Sling Plugin is to use *Quickstart* located in:
+  * [Sling Single-Project Example](https://github.com/Cognifide/gradle-sling-single#quickstart)
+* The only needed software to start using plugin is to have installed on machine Java 8.
+* As a build command, it is recommended to use Gradle Wrapper (`gradlew`) instead of locally installed Gradle (`gradle`) to easily have same version of build tool installed on all environments. Only at first build time, wrapper will be automatically downloaded and installed, then reused.
+
+## Building
+
+1. Clone this project using command `https://github.com/Cognifide/gradle-sling-plugin.git`
+2. Enter cloned directory and simply run command: `sh gradlew`
+3. To use built plugin, add `mavenLocal()` to `repositories` section inside `pluginManagement` of *settings.gradle* file.
+
+## Contributing
+
+Issues reported or pull requests created will be very appreciated. 
+
+1. Fork plugin source using a dedicated GitHub button.
+2. Do code changes on a feature branch created from *develop* branch.
+3. Create a pull request with a base of *develop* branch.
 
 ## License
 

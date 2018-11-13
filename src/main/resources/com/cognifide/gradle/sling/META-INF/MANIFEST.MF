@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Content-Package-Roots: {{filterRoots | join(',')}}
+Content-Package-Type: mixed
+Content-Package-Id: {{project.group}}:{{config.packageName}}:{{project.version}}
+

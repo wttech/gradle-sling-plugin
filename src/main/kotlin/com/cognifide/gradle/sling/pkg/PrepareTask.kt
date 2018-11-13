@@ -4,8 +4,10 @@ import com.cognifide.gradle.sling.api.SlingDefaultTask
 import com.cognifide.gradle.sling.api.SlingTask
 import com.cognifide.gradle.sling.internal.file.FileOperations
 import org.apache.commons.io.FileUtils
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 open class PrepareTask : SlingDefaultTask() {
 
@@ -14,7 +16,10 @@ open class PrepareTask : SlingDefaultTask() {
     }
 
     @OutputDirectory
-    val vaultDir = SlingTask.temporaryDir(project, NAME, PackagePlugin.VLT_PATH)
+    val metaDir = SlingTask.temporaryDir(project, NAME, PackagePlugin.META_PATH)
+
+    @Internal
+    val vaultDir = File(metaDir, "vault")
 
     init {
         description = "Prepare Vault files before composing Vault package"
@@ -26,16 +31,19 @@ open class PrepareTask : SlingDefaultTask() {
 
     @TaskAction
     fun prepare() {
+        ensureDirs()
         copyContentVaultFiles()
         copyMissingVaultFiles()
     }
 
-    private fun copyContentVaultFiles() {
+    private fun ensureDirs() {
         if (vaultDir.exists()) {
             vaultDir.deleteRecursively()
         }
         vaultDir.mkdirs()
+    }
 
+    private fun copyContentVaultFiles() {
         val dirs = config.vaultFilesDirs
 
         if (dirs.isEmpty()) {
@@ -54,6 +62,6 @@ open class PrepareTask : SlingDefaultTask() {
             return
         }
 
-        FileOperations.copyResources(PackagePlugin.VLT_PATH, vaultDir, true)
+        FileOperations.copyResources(PackagePlugin.META_PATH, metaDir, true)
     }
 }

@@ -64,7 +64,7 @@ class SlingBuild(val result: BuildResult, val projectDir: File) {
         val VAULT_FILES = listOf(
                 "META-INF/vault/properties.xml",
                 "META-INF/vault/filter.xml",
-                "META-INF/vault/settings.xml"
+                "META-INF/MANIFEST.MF"
         )
     }
 

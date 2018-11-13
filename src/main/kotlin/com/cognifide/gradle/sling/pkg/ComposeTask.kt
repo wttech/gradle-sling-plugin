@@ -32,14 +32,14 @@ open class ComposeTask : Zip(), SlingTask {
     final override val config = SlingConfig.of(project)
 
     @InputDirectory
-    val vaultDir = SlingTask.temporaryDir(project, PrepareTask.NAME, PackagePlugin.VLT_PATH)
+    val metaDir = SlingTask.temporaryDir(project, PrepareTask.NAME, PackagePlugin.META_PATH)
 
     @Internal
-    val filterRoots = mutableSetOf<Element>()
+    val filters = mutableSetOf<Element>()
 
     @get:Input
-    val filterRootsProp: String
-        get() = filterRoots.joinToString(config.vaultLineSeparatorString) { it.toString() }
+    val filterRoots: List<String>
+        get() = filters.map { it.attr("root") }
 
     @Internal
     var filterRootDefault = { _: Project, subconfig: SlingConfig ->
@@ -95,8 +95,8 @@ open class ComposeTask : Zip(), SlingTask {
     @get:Internal
     val fileProperties
         get() = mapOf(
-                "filters" to filterRoots,
-                "filterRoots" to filterRootsProp
+                "filters" to filters,
+                "filterRoots" to filterRoots
         )
 
     /**
@@ -128,7 +128,7 @@ open class ComposeTask : Zip(), SlingTask {
 
         // Include itself by default
         includeProject(project)
-        includeVault(vaultDir)
+        includeMeta(metaDir)
 
         // Evaluate inclusion above and other cross project inclusions
         project.gradle.projectsEvaluated {
@@ -279,15 +279,15 @@ open class ComposeTask : Zip(), SlingTask {
 
     private fun extractVaultFilters(project: Project, config: SlingConfig) {
         if (!config.vaultFilterPath.isBlank() && File(config.vaultFilterPath).exists()) {
-            filterRoots.addAll(VltFilter(File(config.vaultFilterPath)).rootElements)
+            filters.addAll(VltFilter(File(config.vaultFilterPath)).rootElements)
         } else if (project.plugins.hasPlugin(BundlePlugin.ID)) {
-            filterRoots.add(VltFilter.rootElement(filterRootDefault(project, config)))
+            filters.add(VltFilter.rootElement(filterRootDefault(project, config)))
         }
     }
 
-    fun includeVault(vltPath: Any) {
+    fun includeMeta(vltPath: Any) {
         contentCollectors += {
-            into(PackagePlugin.VLT_PATH) { spec ->
+            into(PackagePlugin.META_PATH) { spec ->
                 spec.from(vltPath)
                 fileFilter(spec)
             }

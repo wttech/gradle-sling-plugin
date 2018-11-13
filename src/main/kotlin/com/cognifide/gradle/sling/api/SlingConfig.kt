@@ -222,7 +222,10 @@ class SlingConfig(
      * Wildcard file name filter expression that is used to filter in which Vault files properties can be injected.
      */
     @Input
-    var packageFilesExpanded: MutableList<String> = mutableListOf("**/${PackagePlugin.VLT_PATH}/*.xml")
+    var packageFilesExpanded: MutableList<String> = mutableListOf(
+            "**/${PackagePlugin.VLT_PATH}/*.xml",
+            "**/META-INF/MANIFEST.MF"
+    )
 
     /**
      * Define here custom properties that can be used in Vault package files like 'META-INF/vault/properties.xml'.
@@ -280,7 +283,7 @@ class SlingConfig(
      * Time to wait after repeating failed upload.
      */
     @Input
-    var uploadRetryDelay: Long = props.long("sling.upload.retry.delay", TimeUnit.SECONDS.toMillis(30))
+    var uploadRetryDelay: Long = props.long("sling.upload.retry.delay", TimeUnit.SECONDS.toMillis(15))
 
     /**
      * Repeat install when failed (brute-forcing).
@@ -292,7 +295,7 @@ class SlingConfig(
      * Time to wait after repeating failed install.
      */
     @Input
-    var installRetryDelay: Long = props.long("sling.install.retry.delay", TimeUnit.SECONDS.toMillis(30))
+    var installRetryDelay: Long = props.long("sling.install.retry.delay", TimeUnit.SECONDS.toMillis(15))
 
     /**
      * Ensures that for directory 'META-INF/vault' default files will be generated when missing:

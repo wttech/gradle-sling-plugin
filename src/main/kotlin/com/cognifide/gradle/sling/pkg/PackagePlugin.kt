@@ -53,7 +53,9 @@ class PackagePlugin : Plugin<Project> {
     companion object {
         const val ID = "com.cognifide.sling.package"
 
-        const val VLT_PATH = "META-INF/vault"
+        const val META_PATH = "META-INF"
+
+        const val VLT_PATH = "$META_PATH/vault"
 
         const val VLT_PROPERTIES = "$VLT_PATH/properties.xml"
 

@@ -6,18 +6,18 @@ class ComposeTaskTest : SlingTest() {
 
     @Test
     fun shouldComposePackageWithBundleAndContent() {
-        buildTask("compose/bundle-and-content", ":slingCompose", {
+        buildTask("compose/bundle-and-content", ":slingCompose") {
             val pkg = file("build/distributions/example-1.0.0-SNAPSHOT.zip")
 
             assertPackage(pkg)
             assertPackageFile(pkg, "jcr_root/apps/example/.content.xml")
             assertPackageFile(pkg, "jcr_root/apps/example/install/com.company.sling.example-1.0.0-SNAPSHOT.jar")
-        })
+        }
     }
 
     @Test
     fun shouldComposePackageAssemblyAndSingles() {
-        buildTasks("compose/assembly", "slingCompose", {
+        buildTasks("compose/assembly", "slingCompose") {
             val assemblyPkg = file("build/distributions/example-1.0.0-SNAPSHOT.zip")
             assertPackage(assemblyPkg)
             assertPackageFile(assemblyPkg, "jcr_root/apps/example/core/.content.xml")
@@ -41,7 +41,7 @@ class ComposeTaskTest : SlingTest() {
             val designPkg = file("design/build/distributions/example-design-1.0.0-SNAPSHOT.zip")
             assertPackage(designPkg)
             assertPackageFile(designPkg, "jcr_root/etc/designs/example/.content.xml")
-        })
+        }
     }
 
 }

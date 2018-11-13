@@ -60,7 +60,8 @@
         "jcr_root/.vlt-sync-config.properties"
       ],
       "packageFilesExpanded": [
-        "**/META-INF/vault/*.xml"
+        "**/META-INF/vault/*.xml",
+        "**/META-INF/MANIFEST.MF"
       ],
       "packageBuildDate": 1524116243133,
       "packageFileProperties": {},
@@ -76,9 +77,9 @@
 
       "uploadForce": true,
       "uploadRetryTimes": 3,
-      "uploadRetryDelay": 30000,
+      "uploadRetryDelay": 15000,
       "installRetryTimes": 1,
-      "installRetryDelay": 30000,
+      "installRetryDelay": 15000,
       "createPath": ".sling/minimal",
       "createFilesPath": "debug/minimal/src/main/resources/local-instance",
       "createFilesExpanded": [

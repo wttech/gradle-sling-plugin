@@ -18,6 +18,7 @@ Incremental build which takes seconds, not minutes. Developer who does not loose
 
 Sling developer - it's time to meet Gradle! You liked or used plugin? Don't forget to **star this project** on GitHub :)
 
+Check out [live demo](https://adapt.to/2018/en/schedule/a-better-developer-experience-for-sling-based-applications.html) presented on official **Sling adaptTo() 2018** conference.
 
 ## Documentation
 

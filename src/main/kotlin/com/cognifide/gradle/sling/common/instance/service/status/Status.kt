@@ -3,8 +3,6 @@ package com.cognifide.gradle.sling.common.instance.service.status
 import com.cognifide.gradle.sling.common.instance.InstanceService
 import com.cognifide.gradle.sling.common.instance.InstanceSync
 import com.cognifide.gradle.common.CommonException
-import com.cognifide.gradle.common.http.RequestException
-import com.cognifide.gradle.common.utils.Formats
 import com.cognifide.gradle.common.utils.Patterns
 import java.util.*
 
@@ -29,23 +27,6 @@ class Status(sync: InstanceSync) : InstanceService(sync) {
      * Sling properties of instance read once across whole build, fail-safe.
      */
     val slingProperties: Map<String, String> get() = readPropertiesOnce(SLING_PROPERTIES_PATH)
-
-    /**
-     * Read Sling version of instance.
-     */
-    fun readProductVersion(): String {
-        val text = try {
-            sync.http.get(PRODUCT_INFO_PATH) { asString(it) }
-        } catch (e: RequestException) {
-            throw StatusException("Cannot request product version of $instance. Cause: ${e.message}", e)
-        }
-
-        val version = text.lineSequence().mapNotNull {
-            PRODUCT_VERSION_REGEX.matchEntire(it)?.groupValues?.get(1)
-        }.firstOrNull()
-
-        return version ?: throw StatusException("Cannot find product version in response of $instance:\n$text")
-    }
 
     fun readPropertiesOnce(path: String): Map<String, String> {
         if (sling.commonOptions.offline.get()) {
@@ -90,39 +71,12 @@ class Status(sync: InstanceSync) : InstanceService(sync) {
             .joinToString("\n")
             .byteInputStream()
 
-    /**
-     * Instance version read once across whole build, fail-safe.
-     */
-    val productVersion: String
-        get() {
-            if (sling.commonOptions.offline.get()) {
-                return PRODUCT_VERSION_UNKNOWN
-            }
-
-            return common.buildScope.tryGetOrPut("${instance.httpUrl}$PRODUCT_INFO_PATH") {
-                try {
-                    readProductVersion().apply {
-                        sling.logger.info("Successfully read product version '$this' of $instance")
-                    }
-                } catch (e: CommonException) {
-                    sling.logger.debug("Cannot read product info of $instance")
-                    null
-                }
-            } ?: PRODUCT_VERSION_UNKNOWN
-        }
-
     companion object {
-
         const val SYSTEM_PROPERTIES_PATH = "/system/console/status-System Properties.txt"
 
         const val SLING_SETTINGS_PATH = "/system/console/status-slingsettings.txt"
 
         const val SLING_PROPERTIES_PATH = "/system/console/status-slingprops.txt"
 
-        const val PRODUCT_INFO_PATH = "/system/console/status-productinfo.txt"
-
-        val PRODUCT_VERSION_REGEX = Regex("^ {2}Adobe Experience Manager \\((.*)\\)$")
-
-        val PRODUCT_VERSION_UNKNOWN = Formats.versionUnknown().version
     }
 }

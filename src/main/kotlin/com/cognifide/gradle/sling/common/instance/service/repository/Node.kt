@@ -320,18 +320,6 @@ class Node(val repository: Repository, val path: String, props: Map<String, Any>
     }
 
     /**
-     * Search nodes by querying repository under node path.
-     */
-    fun query(criteria: QueryCriteria.() -> Unit) = query(QueryCriteria().apply(criteria))
-
-    /**
-     * Search nodes by querying repository under node path.
-     *
-     * Note that this method is automatically querying more results (incrementing offset internally).
-     */
-    fun query(criteria: QueryCriteria): Sequence<Node> = repository.query(criteria.apply { path(this@Node.path) }).nodeSequence()
-
-    /**
      * Update only single property of node.
      */
     fun saveProperty(name: String, value: Any?): RepositoryResult = save(mapOf(name to value))
@@ -415,15 +403,9 @@ class Node(val repository: Repository, val path: String, props: Map<String, Any>
     val json: String get() = Formats.toJson(this)
 
     /**
-     * Upload file to node.
-     *
-     * If node path points to DAM, separate / dedicated endpoint is used automatically,
-     * so that metadata and renditions are generated immediately.
+     * Upload asset using default Sling endpoint.
      */
-    fun upload(file: File) = when {
-        repository.damUploads.get() && path.startsWith("$DAM_PATH/") -> uploadDamAsset(file)
-        else -> uploadFile(file)
-    }
+    fun upload(file: File) = uploadFile(file)
 
     /**
      * Upload asset using default Sling endpoint.

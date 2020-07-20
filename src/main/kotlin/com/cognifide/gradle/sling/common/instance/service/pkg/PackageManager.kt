@@ -32,6 +32,14 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
     private val http = sync.http
 
     /**
+     * Force upload CRX package regardless if it was previously uploaded.
+     */
+    val uploadForce = sling.obj.boolean {
+        convention(true)
+        sling.prop.boolean("package.manager.uploadForce")?.let { set(it) }
+    }
+
+    /**
      * Repeat upload when failed (brute-forcing).
      */
     var uploadRetry = common.retry { afterSquaredSecond(sling.prop.long("package.manager.uploadRetry") ?: 3) }
@@ -40,6 +48,14 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
      * Repeat install when failed (brute-forcing).
      */
     var installRetry = common.retry { afterSquaredSecond(sling.prop.long("package.manager.installRetry") ?: 2) }
+
+    /**
+     * Determines if when on package install, sub-packages included in CRX package content should be also installed.
+     */
+    val installRecursive = sling.obj.boolean {
+        convention(true)
+        sling.prop.boolean("package.manager.installRecursive")?.let { set(it) }
+    }
 
     /**
      * Deploys only if package is changed (checksum based) or reinstalled on instance in the meantime.
@@ -62,7 +78,7 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
      */
     @Input
     val listRefresh = sling.obj.boolean {
-        convention(true)
+        convention(false)
         sling.prop.boolean("package.manager.listRefresh")?.let { set(it) }
     }
 
@@ -129,7 +145,10 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
             logger.info("Uploading package '$file' to $instance'")
 
             val response = try {
-                http.postMultipart("/bin/cpm/package.upload.json", mapOf("file" to file)) { asObjectFromJson<UploadResponse>(it) }
+                http.postMultipart("/bin/cpm/package.upload.json", mapOf(
+                        "file" to file,
+                        "force" to (uploadForce.get() || isSnapshot(file))
+                )) { asObjectFromJson<UploadResponse>(it) }
             } catch (e: FileNotFoundException) {
                 throw PackageException("Package '$file' to be uploaded not found!", e)
             } catch (e: RequestException) {
@@ -221,7 +240,10 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
             logger.info("Installing package '$remotePath' on $instance")
 
             val response = try {
-                http.postMultipart("/bin/cpm/package.install.json", mapOf("path" to remotePath)) { asObjectFromJson<InstallResponse>(it) }
+                http.postMultipart("/bin/cpm/package.install.json", mapOf(
+                        "path" to remotePath,
+                        "recursive" to installRecursive.get())
+                ) { asObjectFromJson<InstallResponse>(it) }
             } catch (e: RequestException) {
                 throw InstanceException("Cannot install package '$remotePath' on $instance. Cause: ${e.message}", e)
             } catch (e: ResponseException) {

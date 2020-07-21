@@ -24,7 +24,7 @@ open class PackageConfig : SlingDefaultTask() {
      * Root repository path used to store temporarily OSGi configs for a serialization time only.
      */
     @Internal
-    val rootPath = sling.obj.string { convention("/var/gap/package/config") }
+    val rootPath = sling.obj.string { convention("/var/gsp/package/config") }
 
     /**
      * Target directory in which OSGi configs read will be saved.

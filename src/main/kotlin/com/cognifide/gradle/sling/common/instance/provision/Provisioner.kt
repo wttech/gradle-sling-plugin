@@ -58,7 +58,7 @@ class Provisioner(val manager: InstanceManager) {
      * Determines a path in JCR repository in which provisioning metadata and step markers will be stored.
      */
     val path = sling.obj.string {
-        convention("/var/gap/provision")
+        convention("/var/gsp/provision")
         sling.prop.string("instance.provision.path")?.let { set(it) }
     }
 

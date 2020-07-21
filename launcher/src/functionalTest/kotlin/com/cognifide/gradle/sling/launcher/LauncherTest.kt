@@ -24,7 +24,7 @@ class LauncherTest {
     }
 
     private fun File.launch(vararg args: String) {
-        ProcBuilder("java", "-jar", File("build/libs/gap.jar").absolutePath, *args).apply {
+        ProcBuilder("java", "-jar", File("build/libs/gsp.jar").absolutePath, *args).apply {
             withWorkingDirectory(this@launch)
             withOutputStream(System.out)
             withErrorStream(System.err)

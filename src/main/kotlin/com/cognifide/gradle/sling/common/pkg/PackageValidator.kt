@@ -179,7 +179,7 @@ class PackageValidator(@Internal val sling: SlingExtension) {
 
         sling.composePackage {
             archivePath.set(initialPkg)
-            filter("/var/gap/package/validator") // anything
+            filter("/var/gsp/package/validator") // anything
             content { FileUtils.copyDirectory(tmpDir, pkgDir) }
         }
 

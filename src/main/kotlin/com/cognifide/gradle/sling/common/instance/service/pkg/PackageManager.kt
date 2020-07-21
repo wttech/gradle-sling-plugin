@@ -416,7 +416,7 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
 
         const val STORAGE_PATH = "/etc/packages"
 
-        const val METADATA_PATH = "/var/gap/package/deploy"
+        const val METADATA_PATH = "/var/gsp/package/deploy"
 
         const val METADATA_PATH_PROP = "path"
 

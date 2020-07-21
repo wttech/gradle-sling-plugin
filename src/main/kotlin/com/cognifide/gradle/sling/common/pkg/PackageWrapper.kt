@@ -8,7 +8,7 @@ class PackageWrapper(val sling: SlingExtension) {
 
     val workDir = sling.obj.dir { convention(sling.obj.buildDir("package/wrapper")) }
 
-    val bundlePath = sling.obj.string { convention(sling.packageOptions.installPath) }
+    val bundlePath = sling.obj.string { convention("/apps/gsp/wrapper/install") }
 
     fun definition(definition: PackageDefinition.(BundleFile) -> Unit) {
         this.definition = definition

@@ -14,7 +14,7 @@ open class PackageDeploy : PackageTask() {
     }
 
     init {
-        description = "Deploys CRX package on instance(s). Upload then install (and optionally activate)."
+        description = "Deploys Vault package on instance(s). Upload then install (and optionally activate)."
         instances.convention(sling.obj.provider { sling.instances })
         sling.prop.boolean("package.deploy.awaited")?.let { awaited.set(it) }
     }

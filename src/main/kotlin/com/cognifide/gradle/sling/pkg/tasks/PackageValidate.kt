@@ -24,7 +24,7 @@ open class PackageValidate : SlingDefaultTask() {
     }
 
     init {
-        description = "Validates built CRX package"
+        description = "Validates built Vault package"
     }
 
     companion object {

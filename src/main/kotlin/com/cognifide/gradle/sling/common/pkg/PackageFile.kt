@@ -27,18 +27,18 @@ class PackageFile(val file: File) : Serializable {
 
         val zip = ZipFile(file)
         if (!zip.contains(Package.VLT_PROPERTIES)) {
-            throw PackageException("Package is not a valid CRX package: $file!")
+            throw PackageException("Package is not a valid Vault package: $file!")
         }
 
         this.properties = zip.readFileAsText(Package.VLT_PROPERTIES).run {
             Jsoup.parse(this, "", Parser.xmlParser())
         }
         this.group = properties.select("entry[key=group]").text()
-                ?: throw PackageException("CRX package '$file' does not have property 'group' specified.")
+                ?: throw PackageException("Vault package '$file' does not have property 'group' specified.")
         this.name = properties.select("entry[key=name]").text()
-                ?: throw PackageException("CRX package '$file' does not have property 'name' specified.")
+                ?: throw PackageException("Vault package '$file' does not have property 'name' specified.")
         this.version = properties.select("entry[key=version]").text()
-                ?: throw PackageException("CRX package '$file' does not have property 'version' specified.")
+                ?: throw PackageException("Vault package '$file' does not have property 'version' specified.")
     }
 
     fun property(name: String): String? = properties.select("entry[key=$name]").text()

@@ -38,7 +38,7 @@ open class BundleJar(private val jar: Jar) {
     fun bnd(vararg lines: CharSequence) = bndConvention.bnd(*lines)
 
     /**
-     * Content path for OSGi bundle jars being placed in CRX package.
+     * Content path for OSGi bundle jars being placed in Vault package.
      */
     @Input
     val installPath = sling.obj.string { convention(sling.packageOptions.installPath) }

@@ -73,7 +73,7 @@ class BundlePluginTest : SlingBuildTest() {
                     // TODO use sling dependencies: compileOnly("com.adobe.aem:uber-jar:6.5.0:apis")
                     
                     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
-                    // TODO sling-mock: testImplementation("io.wcm:io.wcm.testing.aem-mock.junit5:2.5.2")
+                    testImplementation("org.apache.sling:org.apache.sling.testing.sling-mock.junit5:2.5.0")
                 }
 
                 tasks {

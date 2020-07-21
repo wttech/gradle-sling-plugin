@@ -35,7 +35,7 @@ open class PackageCompose : ZipTask(), SlingTask {
     val metaDir = sling.obj.relativeDir(contentDir, Package.META_PATH)
 
     /**
-     * Content path for OSGi bundle jars being placed in CRX package.
+     * Content path for OSGi bundle jars being placed in Vault package.
      */
     @Input
     val bundlePath = sling.obj.string { convention(sling.packageOptions.installPath) }
@@ -60,7 +60,7 @@ open class PackageCompose : ZipTask(), SlingTask {
     private var bundleBuiltOptions: BundleInstalledBuilt.() -> Unit = {}
 
     /**
-     * Content path for CRX sub-packages being placed in CRX package being built.
+     * Content path for CRX sub-packages being placed in Vault package being built.
      */
     @Input
     val nestedPath = sling.obj.string { convention(sling.packageOptions.storagePath) }
@@ -75,7 +75,7 @@ open class PackageCompose : ZipTask(), SlingTask {
     }
 
     /**
-     * Defines properties being used to generate CRX package metadata files.
+     * Defines properties being used to generate Vault package metadata files.
      */
     @Nested
     val vaultDefinition = VaultDefinition(sling)
@@ -319,7 +319,7 @@ open class PackageCompose : ZipTask(), SlingTask {
 
     init {
         group = SlingTask.GROUP
-        description = "Composes CRX package from JCR content and built or resolved OSGi bundles"
+        description = "Composes Vault package from JCR content and built or resolved OSGi bundles"
         archiveBaseName.set(sling.commonOptions.baseName)
         destinationDirectory.set(project.layout.buildDirectory.dir(name))
         duplicatesStrategy = DuplicatesStrategy.WARN

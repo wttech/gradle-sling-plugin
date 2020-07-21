@@ -167,7 +167,7 @@ class LocalInstanceManager(internal val sling: SlingExtension) : Serializable {
     val install by lazy { InstallResolver(sling) }
 
     /**
-     * Configure CRX packages, bundles to be pre-installed on instance(s).
+     * Configure Vault packages, bundles to be pre-installed on instance(s).
      */
     fun install(options: InstallResolver.() -> Unit) = install.using(options)
 

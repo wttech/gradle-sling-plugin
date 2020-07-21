@@ -26,11 +26,11 @@ class PackageWrapper(val sling: SlingExtension) {
         val pkgName = jar.nameWithoutExtension
         val pkg = File(workDir.get().asFile, "$pkgName.zip")
         if (pkg.exists()) {
-            sling.logger.info("CRX package wrapping OSGi bundle already exists: $pkg")
+            sling.logger.info("Vault package wrapping OSGi bundle already exists: $pkg")
             return pkg
         }
 
-        sling.logger.info("Wrapping OSGi bundle to CRX package: $jar")
+        sling.logger.info("Wrapping OSGi bundle to Vault package: $jar")
 
         val bundle = BundleFile(jar)
         val bundlePath = "${bundlePath.get()}/${jar.name}"

@@ -75,13 +75,13 @@ open class SlingBuildTest {
             
             import org.junit.jupiter.api.Test;
             import org.junit.jupiter.api.extension.ExtendWith;
-            import io.wcm.testing.mock.aem.junit5.AemContext; // TODO use sling mocks
-            import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+            import org.apache.sling.testing.mock.sling.junit5.SlingContext;
+            import org.apache.sling.testing.mock.sling.junit5.SlingContextExtension;
             
-            @ExtendWith(AemContextExtension.class)
+            @ExtendWith(SlingContextExtension.class)
             class HelloServiceTest {
                 
-                private final AemContext context = new AemContext();
+                private final SlingContext context = new SlingContext();
                     
                 @Test
                 void shouldUseService() {

@@ -72,7 +72,7 @@ open class PackagePrepare : SlingDefaultTask() {
     }
 
     init {
-        description = "Prepares CRX package before composing."
+        description = "Prepares Vault package before composing."
     }
 
     companion object {

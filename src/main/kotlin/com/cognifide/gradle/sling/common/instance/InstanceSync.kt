@@ -28,7 +28,7 @@ class InstanceSync(val sling: SlingExtension, val instance: Instance) {
     val packageManager by lazy { PackageManager(this) }
 
     /**
-     * Manage CRX packages on Sling instance (upload, install, delete etc).
+     * Manage Vault packages on Sling instance (upload, install, delete etc).
      */
     fun <T> packageManager(callback: PackageManager.() -> T): T = packageManager.run(callback)
 

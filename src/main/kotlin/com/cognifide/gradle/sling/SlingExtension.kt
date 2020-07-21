@@ -79,12 +79,12 @@ class SlingExtension(val project: Project) : Serializable {
     fun pkg(options: PackageOptions.() -> Unit) = `package`(options)
 
     /**
-     * Read CRX package properties of specified ZIP file.
+     * Read Vault package properties of specified ZIP file.
      */
     fun `package`(file: File) = PackageFile(file)
 
     /**
-     * Read CRX package properties of specified ZIP file.
+     * Read Vault package properties of specified ZIP file.
      */
     fun pkg(file: File) = `package`(file)
 
@@ -239,7 +239,7 @@ class SlingExtension(val project: Project) : Serializable {
     fun remoteInstances(consumer: Instance.() -> Unit) = common.parallel.with(remoteInstances, consumer)
 
     /**
-     * Get CRX package defined to be built (could not yet exist).
+     * Get Vault package defined to be built (could not yet exist).
      */
     @Suppress("VariableNaming")
     val `package`: File get() = common.tasks.get<PackageCompose>(PackageCompose.NAME).archiveFile.get().asFile
@@ -247,7 +247,7 @@ class SlingExtension(val project: Project) : Serializable {
     val pkg: File get() = `package`
 
     /**
-     * Get all CRX packages defined to be built.
+     * Get all Vault packages defined to be built.
      */
     val packages: List<File> get() = common.tasks.getAll<PackageCompose>().map { it.archiveFile.get().asFile }
 
@@ -337,18 +337,18 @@ class SlingExtension(val project: Project) : Serializable {
     }
 
     /**
-     * Build minimal CRX package in-place / only via code.
+     * Build minimal Vault package in-place / only via code.
      * All details like Vault properties, archive destination directory, file name are customizable.
      */
     fun composePackage(definition: PackageDefinition.() -> Unit): File = PackageDefinition(this).apply(definition).compose()
 
     /**
-     * Validate any CRX packages.
+     * Validate any Vault packages.
      */
     fun validatePackage(vararg packages: File, options: PackageValidator.() -> Unit = {}) = validatePackage(packages.asIterable(), options)
 
     /**
-     * Validate any CRX packages.
+     * Validate any Vault packages.
      */
     fun validatePackage(packages: Iterable<File>, options: PackageValidator.() -> Unit = {}) = PackageValidator(this).apply(options).perform(packages)
 

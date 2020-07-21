@@ -14,7 +14,7 @@ import java.util.jar.Manifest
 import java.util.regex.Pattern
 
 /**
- * Represents collection of metadata being a part of CRX package.
+ * Represents collection of metadata being a part of Vault package.
  */
 open class VaultDefinition(private val sling: SlingExtension) {
 
@@ -33,19 +33,19 @@ open class VaultDefinition(private val sling: SlingExtension) {
     }
 
     /**
-     * Name visible in CRX package manager
+     * Name visible in Composum Package manager
      */
     @Input
     val name = sling.obj.string { convention(sling.commonOptions.baseName) }
 
     /**
-     * Group for categorizing in CRX package manager
+     * Group for categorizing in Composum Package manager
      */
     @Input
     val group = sling.obj.string { convention(sling.obj.provider { sling.project.group.toString() }) }
 
     /**
-     * Version visible in CRX package manager.
+     * Version visible in Composum Package manager.
      */
     @Input
     val version = sling.obj.string { convention(sling.obj.provider { sling.project.version.toString() }) }

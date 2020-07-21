@@ -9,7 +9,7 @@ open class CommonOptions(private val sling: SlingExtension) {
     private val project = sling.project
 
     /**
-     * Base name used as default for CRX packages being created by compose or collect task
+     * Base name used as default for Vault packages being created by compose or collect task
      * and also for OSGi bundle JARs.
      */
     val baseName = sling.obj.string {

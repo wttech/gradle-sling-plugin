@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils
 import java.io.File
 
 /**
- * Package builder that could be used to compose CRX package in place.
+ * Package builder that could be used to compose Vault package in place.
  *
  * This is programmatic approach to create ZIP file. API reflects Gradle's AbstractArchiveTask.
  * Useful for writing complex custom tasks that cannot inherit from Gradle's ZIP task.
@@ -51,7 +51,7 @@ class PackageDefinition(private val sling: SlingExtension) : VaultDefinition(sli
     }
 
     /**
-     * Temporary directory being zipped to produce CRX package.
+     * Temporary directory being zipped to produce Vault package.
      */
     val pkgDir: File get() = archivePath.get().asFile.parentFile
             .resolve("${archivePath.get().asFile.nameWithoutExtension}.pkg")
@@ -94,7 +94,7 @@ class PackageDefinition(private val sling: SlingExtension) : VaultDefinition(sli
     }
 
     /**
-     * Compose a CRX package basing on configured definition.
+     * Compose a Vault package basing on configured definition.
      */
     fun compose(): File {
         archivePath.get().asFile.delete()

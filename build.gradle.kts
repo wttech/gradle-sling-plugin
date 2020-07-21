@@ -190,7 +190,7 @@ gradlePlugin {
             id = "com.cognifide.sling.package"
             implementationClass = "com.cognifide.gradle.sling.pkg.PackagePlugin"
             displayName = "Sling Package Plugin"
-            description = "Provides tasks for working with CRX packages."
+            description = "Provides tasks for working with Vault packages."
         }
         create("package.sync") {
             id = "com.cognifide.sling.package.sync"

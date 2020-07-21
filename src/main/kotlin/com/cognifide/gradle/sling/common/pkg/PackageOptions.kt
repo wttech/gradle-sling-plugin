@@ -28,13 +28,13 @@ class PackageOptions(private val sling: SlingExtension) : Serializable {
     val vltDir = sling.obj.relativeDir(contentDir, Package.VLT_PATH)
 
     /**
-     * Custom path to Vault files that will be used to build CRX package.
+     * Custom path to Vault files that will be used to build Vault package.
      * Useful to share same files for all packages, like package thumbnail.
      */
     val metaCommonDir = sling.obj.relativeDir(commonDir, "defaults/${Package.META_PATH}")
 
     /**
-     * Content path for Sling application placed in CRX package.
+     * Content path for Sling application placed in Vault package.
      */
     val appPath = sling.obj.string {
         convention(sling.obj.provider {
@@ -47,27 +47,27 @@ class PackageOptions(private val sling: SlingExtension) : Serializable {
     }
 
     /**
-     * Repository path for OSGi bundles (JAR files) placed in CRX package.
+     * Repository path for OSGi bundles (JAR files) placed in Vault package.
      */
     val installPath = sling.obj.string { convention(appPath.map { "$it/install" }) }
 
     /**
-     * Source directory for OSGi bundles (JAR files) placed in CRX package.
+     * Source directory for OSGi bundles (JAR files) placed in Vault package.
      */
     val installDir = sling.obj.dir { convention(jcrRootDir.dir(installPath.map { it.removePrefix("/") })) }
 
     /**
-     * Repository path for OSGi configurations placed in CRX package.
+     * Repository path for OSGi configurations placed in Vault package.
      */
     val configPath = sling.obj.string { convention(appPath.map { "$it/config" }) }
 
     /**
-     * Source directory for XML files holding OSGi configurations placed in CRX package.
+     * Source directory for XML files holding OSGi configurations placed in Vault package.
      */
     val configDir = sling.obj.dir { convention(jcrRootDir.dir(configPath.map { it.removePrefix("/") })) }
 
     /**
-     * Content path at which CRX Package Manager is storing uploaded packages.
+     * Content path at which Composum Package Manager is storing uploaded packages.
      */
     val storagePath = sling.obj.string {
         convention("/etc/packages")
@@ -76,7 +76,7 @@ class PackageOptions(private val sling: SlingExtension) : Serializable {
 
     /**
      * Configures a local repository from which unreleased JARs could be added as 'compileOnly' dependency
-     * and be deployed within CRX package deployment.
+     * and be deployed within Vault package deployment.
      */
     val installRepository = sling.obj.boolean {
         convention(true)

@@ -22,7 +22,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 /**
- * Allows to communicate with CRX Package Manager.
+ * Allows to communicate with Composum Package Manager.
  *
  * @see <https://helpx.adobe.com/experience-manager/6-5/sites/administering/using/package-manager.html>
  */
@@ -32,7 +32,7 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
     private val http = sync.http
 
     /**
-     * Force upload CRX package regardless if it was previously uploaded.
+     * Force upload Vault package regardless if it was previously uploaded.
      */
     val uploadForce = sling.obj.boolean {
         convention(true)
@@ -50,7 +50,7 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
     var installRetry = common.retry { afterSquaredSecond(sling.prop.long("package.manager.installRetry") ?: 2) }
 
     /**
-     * Determines if when on package install, sub-packages included in CRX package content should be also installed.
+     * Determines if when on package install, sub-packages included in Vault package content should be also installed.
      */
     val installRecursive = sling.obj.boolean {
         convention(true)
@@ -88,8 +88,8 @@ class PackageManager(sync: InstanceSync) : InstanceService(sync) {
     var downloadRetry = common.retry { afterSquaredSecond(sling.prop.long("package.manager.downloadRetry") ?: 3) }
 
     /**
-     * CRX package name conventions (with wildcard) indicating that package can change over time
-     * while having same version specified. Affects CRX packages composed and satisfied.
+     * Vault package name conventions (with wildcard) indicating that package can change over time
+     * while having same version specified. Affects Vault packages composed and satisfied.
      */
     val snapshots = sling.obj.strings {
         convention(listOf())

@@ -3,7 +3,7 @@ package com.cognifide.gradle.sling.common.instance.check
 import java.util.concurrent.TimeUnit
 
 /**
- * Check that protects against false-positive CRX package deployments.
+ * Check that protects against false-positive Vault package deployments.
  *
  * It awaits instance state to be changed at least one time.
  * If it does not, it just make a little delay to be sure that this state is not temporary.

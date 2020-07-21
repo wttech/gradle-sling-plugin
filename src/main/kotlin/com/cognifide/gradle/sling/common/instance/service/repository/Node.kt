@@ -474,7 +474,7 @@ class Node(val repository: Repository, val path: String, props: Map<String, Any>
     fun downloadTo(targetDir: File) = targetDir.resolve(name).apply { download(this) }
 
     /**
-     * Download node as CRX package.
+     * Download node as Vault package.
      */
     fun downloadPackage(options: PackageDefinition.() -> Unit = {}) = repository.sync.packageManager.download {
         archiveBaseName.set(JcrUtil.manglePath(this@Node.name))

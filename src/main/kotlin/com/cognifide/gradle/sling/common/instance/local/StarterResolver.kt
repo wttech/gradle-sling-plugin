@@ -11,7 +11,7 @@ class StarterResolver(private val sling: SlingExtension) {
      * Directory storing downloaded Sling Starter source files (JAR & license).
      */
     val downloadDir = sling.obj.dir {
-        convention(sling.obj.buildDir(TEMPORARY_DIR))
+        convention(sling.obj.buildDir("instance/starter"))
         sling.prop.file("localInstance.starter.downloadDir")?.let { set(it) }
     }
 
@@ -26,9 +26,4 @@ class StarterResolver(private val sling: SlingExtension) {
     val jar: File? get() = jarUrl.orNull?.let { common.fileTransfer.downloadTo(it, downloadDir.get().asFile) }
 
     val files: List<File> get() = listOfNotNull(jar)
-
-    companion object {
-
-        const val TEMPORARY_DIR = "instance/sling"
-    }
 }

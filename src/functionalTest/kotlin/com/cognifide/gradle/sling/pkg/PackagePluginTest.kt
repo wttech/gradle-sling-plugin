@@ -172,9 +172,7 @@ class PackagePluginTest : SlingBuildTest() {
                     
                     <entry key="acHandling">merge_preserve</entry>
                     <entry key="requiresRoot">false</entry>
-                    <entry key="installhook.actool.class">biz.netcentric.cq.tools.actool.installhook.AcToolInstallHook</entry>
                     <entry key="ui.apps.merged">test</entry>
-                    <entry key="installhook.aecu.class">de.valtech.aecu.core.installhook.AecuInstallHook</entry>
                     
                 </properties>
             """)
@@ -249,7 +247,7 @@ class PackagePluginTest : SlingBuildTest() {
                 <?xml version="1.0" encoding="UTF-8"?>
                 <workspaceFilter version="1.0">
                   <filter root="/apps/package-nesting-repository/install/jsoup-1.10.2.jar"/>
-                  <filter root="/apps/package-nesting-repository/install.author/search-webconsole-plugin-1.3.0.jar"/>
+                  <filter root="/apps/package-nesting-repository/install.master/search-webconsole-plugin-1.3.0.jar"/>
                   
                 </workspaceFilter>
             """)
@@ -335,13 +333,13 @@ class PackagePluginTest : SlingBuildTest() {
                 compileOnly("org.osgi:osgi.cmpn:6.0.0")
                 
                 testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
-                // TODO sling mock: testImplementation("io.wcm:io.wcm.testing.aem-mock.junit5:2.5.2")
+                testImplementation("org.apache.sling:org.apache.sling.testing.sling-mock.junit5:2.5.0")
             }
             
             tasks {
                 packageCompose {
                     vaultDefinition {
-                        property("installhook.actool.class", "biz.netcentric.cq.tools.actool.installhook.AcToolInstallHook")
+                        // TODO: property("installhook.actool.class", "biz.netcentric.cq.tools.actool.installhook.AcToolInstallHook")
                     }
                     merged { assembly ->
                         assembly.vaultDefinition.property("ui.apps.merged", "test")

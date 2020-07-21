@@ -21,7 +21,7 @@ class PackageFileFilter(private val task: PackageCompose) : Serializable {
     val excluding = sling.obj.boolean { convention(true) }
 
     /**
-     * Exclude files being a part of CRX package.
+     * Exclude files being a part of Vault package.
      */
     @Input
     val excludeFiles = sling.obj.strings { convention(EXCLUDE_FILES_DEFAULT) }
@@ -36,7 +36,7 @@ class PackageFileFilter(private val task: PackageCompose) : Serializable {
     val expandFiles = sling.obj.strings { convention(EXPAND_FILES_DEFAULT) }
 
     /**
-     * Define here custom properties that can be used in CRX package files like 'META-INF/vault/properties.xml'.
+     * Define here custom properties that can be used in Vault package files like 'META-INF/vault/properties.xml'.
      * Could override predefined properties provided by plugin itself.
      */
     @Input
@@ -45,7 +45,7 @@ class PackageFileFilter(private val task: PackageCompose) : Serializable {
     fun expandProperty(name: String, value: String) { expandProperties.put(name, value) }
 
     /**
-     * Filter that ensures that only OSGi bundles will be put into CRX package under install path.
+     * Filter that ensures that only OSGi bundles will be put into Vault package under install path.
      */
     @Input
     val bundleChecking = sling.obj.typed<BundleChecking> {
@@ -79,7 +79,7 @@ class PackageFileFilter(private val task: PackageCompose) : Serializable {
             if (bundleChecking.get() != BundleChecking.NONE && Patterns.wildcard(path, bundlePath.get())) {
                 val bundle = fileDetail.file
                 if (!isBundle(bundle)) {
-                    val errorMessage = "JAR file being added to CRX package '$pkg' is not a valid OSGi bundle '$bundle'!"
+                    val errorMessage = "JAR file being added to Vault package '$pkg' is not a valid OSGi bundle '$bundle'!"
                     when (bundleChecking.get()) {
                         BundleChecking.WARN -> {
                             sling.logger.warn(errorMessage)

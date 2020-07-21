@@ -10,7 +10,7 @@ import org.gradle.api.Task
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 /**
- * Provides tasks useful for synchronizing JCR content from running Sling instance into built CRX package.
+ * Provides tasks useful for synchronizing JCR content from running Sling instance into built Vault package.
  */
 class PackageSyncPlugin : CommonDefaultPlugin() {
 

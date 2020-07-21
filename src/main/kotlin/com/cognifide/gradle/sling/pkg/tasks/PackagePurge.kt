@@ -14,7 +14,7 @@ open class PackagePurge : PackageTask() {
     }
 
     init {
-        description = "Uninstalls and then deletes CRX package on Sling instance(s)."
+        description = "Uninstalls and then deletes Vault package on Sling instance(s)."
         sling.prop.boolean("package.purge.awaited")?.let { awaited.set(it) }
         checkForce()
     }

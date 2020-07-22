@@ -2,7 +2,6 @@ package com.cognifide.gradle.sling.instance.local
 
 import com.cognifide.gradle.sling.test.SlingBuildTest
 import org.gradle.internal.impldep.org.testng.AssertJUnit.assertEquals
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 @Suppress("LongMethod", "MaxLineLength")
@@ -60,7 +59,6 @@ class LocalInstancePluginTest : SlingBuildTest() {
     }
 
     @Test
-    @Disabled // TODO fix it!
     fun `should setup and backup local sling instance`() {
         val projectDir = prepareProject("local-instance-setup-and-backup") {
             gradleProperties("""

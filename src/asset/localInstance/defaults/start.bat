@@ -1,1 +1,1 @@
-java {{instance.jvmOptsString}} -jar {{instance.jar.name}} start {{instance.startOptsString}}
+java {{instance.jvmOptsString}} -jar {{instance.jar.name}} start -p {{instance.httpPort}} {{instance.startOptsString}}

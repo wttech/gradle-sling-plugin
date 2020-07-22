@@ -3,4 +3,4 @@
 mkdir -p sling/logs
 mkdir -p sling/conf
 
-java {{instance.jvmOptsString}} -jar {{instance.jar.name}} start {{instance.startOptsString}} > sling/logs/launchpad.log 2>&1 & echo $! > sling/conf/sling.pid
+java {{instance.jvmOptsString}} -jar {{instance.jar.name}} start -p {{instance.httpPort}} {{instance.startOptsString}} > sling/logs/launchpad.log 2>&1 & echo $! > sling/conf/sling.pid

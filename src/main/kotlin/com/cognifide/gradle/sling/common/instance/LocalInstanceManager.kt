@@ -126,6 +126,7 @@ class LocalInstanceManager(internal val sling: SlingExtension) : Serializable {
      */
     val expandFiles = sling.obj.strings {
         convention(listOf(
+                "**/sling.properties",
                 "**/start.bat",
                 "**/stop.bat",
                 "**/start",

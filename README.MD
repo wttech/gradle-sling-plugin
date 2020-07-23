@@ -10,8 +10,6 @@
   <img src="docs/gsp-logo.png" alt="Logo"/>
 </p>
 
-## Description
-
 Currently there is no popular way to build applications for Sling using Gradle build system. This project contains brand new Gradle plugin to assemble Vault package and deploy it on instance(s).
 
 Incremental build which takes seconds, not minutes. Developer who does not loose focus between build time gaps. Extend freely your build system directly in project. 
@@ -20,11 +18,22 @@ Sling developer - it's time to meet Gradle! You liked or used plugin? Don't forg
 
 Check out [live demo](https://adapt.to/2018/en/schedule/a-better-developer-experience-for-sling-based-applications.html) presented on official **Sling adaptTo() 2018** conference.
 
+## Table of contents
+
+  * [Documentation](#documentation)
+     * [Differences](#differences)
+        * [No queries](#no-queries)
+     * [No workflow manager](#no-workflow-manager)
+     * [No automatic node types synchronization](#no-automatic-node-types-synchronization)
+  * [Building](#building)
+  * [Contributing](#contributing)
+  * [License](#license)
+
 ## Documentation
 
 This project is a **fork** of [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
 
-Almost all of its concepts are applicable to pure Sling so that all of features of GAP 4.x.x are available in GSP.
+Almost all of its concepts are applicable to pure Sling so that all of features of GAP 14.x.x are available in GSP.
 The maintenance and synchronization of two separate plugins may be exhausting, so that any **volunteers** that will take care about this fork are appreciated.
 Generally to keep documentation up to date and occasionally transfer code from GAP to GSP and vice versa.
 
@@ -38,6 +47,32 @@ sling {
 ```
 
 Task names are not changed - are same as in Gradle AEM Plugin.
+
+### Differences
+
+There are few differences between GAP and GSP, that it is good to be aware.
+
+#### No queries
+
+Sling Plugin has no capabilities to perform queries as of query builder endpoints are available only on AEM. Simply instead of queries:
+
+```kotlin
+instance.sync { repository.node("/content").query { /* ... */ } }
+```
+
+Use traversing with filtering:
+
+```kotlin
+instance.sync { repository.node("/content").traverse().filter { subnode -> /* ... */ } }
+```
+
+### No workflow manager
+
+Toggling workflows e.g for a time of deploying package is not available as of there are no such thing as workflows on pure Sling instance.
+
+### No automatic node types synchronization
+
+See: <https://github.com/ist-dresden/composum/issues/199>
 
 ## Building
 

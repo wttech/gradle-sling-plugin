@@ -77,6 +77,5 @@ class Status(sync: InstanceSync) : InstanceService(sync) {
         const val SLING_SETTINGS_PATH = "/system/console/status-slingsettings.txt"
 
         const val SLING_PROPERTIES_PATH = "/system/console/status-slingprops.txt"
-
     }
 }

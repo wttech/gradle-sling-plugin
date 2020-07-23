@@ -12,7 +12,7 @@ class LauncherTest {
 
     @Test
     fun shouldDisplayInstanceStatus() = test("instance-status") {
-        launch("instanceStatus", "-Pinstance.local-author.httpUrl=http://localhost:8502") // some unavailable instance
+        launch("instanceStatus", "-Pinstance.local-master.httpUrl=http://localhost:8502") // some unavailable instance
     }
 
     private fun test(name: String, callback: File.() -> Unit) {

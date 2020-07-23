@@ -14,8 +14,6 @@ class PackagePluginTest : SlingTest() {
 
         extensions.getByName(SlingExtension.NAME)
 
-        tasks.getByName(PackageActivate.NAME)
-
         tasks.named(PackageCompose.NAME, PackageCompose::class.java).get().apply {
             assertEquals("test.zip", archiveFile.get().asFile.name)
         }

@@ -1,7 +1,6 @@
 package com.cognifide.gradle.sling.common.instance
 
 import com.cognifide.gradle.sling.SlingExtension
-import com.cognifide.gradle.sling.SlingVersion
 import com.cognifide.gradle.sling.common.instance.service.pkg.Package
 import com.cognifide.gradle.common.utils.Formats
 import java.io.File

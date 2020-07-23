@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 class BuildResponse : PackageResponse() {
 
-    override val success: Boolean get() =  (operation == "build" && status == "successful")
+    override val success: Boolean get() = (operation == "build" && status == "successful")
 
     @JsonProperty("package")
     lateinit var pkg: Package

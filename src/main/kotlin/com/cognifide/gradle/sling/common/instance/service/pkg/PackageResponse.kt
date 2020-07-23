@@ -12,5 +12,4 @@ abstract class PackageResponse {
     lateinit var path: String
 
     abstract val success: Boolean
-
 }

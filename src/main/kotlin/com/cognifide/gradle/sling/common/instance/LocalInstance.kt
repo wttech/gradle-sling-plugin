@@ -1,12 +1,9 @@
 package com.cognifide.gradle.sling.common.instance
 
 import com.cognifide.gradle.sling.SlingExtension
-import com.cognifide.gradle.sling.SlingVersion
 import com.cognifide.gradle.sling.common.file.FileOperations
-import com.cognifide.gradle.sling.common.file.ZipFile
 import com.cognifide.gradle.sling.common.instance.local.Script
 import com.cognifide.gradle.sling.common.instance.local.Status
-import com.cognifide.gradle.common.utils.Formats
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.apache.commons.io.FileUtils

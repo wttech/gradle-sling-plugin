@@ -1,6 +1,5 @@
 package com.cognifide.gradle.sling.common.instance.tail
 
-import com.cognifide.gradle.sling.SlingVersion
 import com.cognifide.gradle.sling.common.instance.Instance
 import com.cognifide.gradle.sling.common.instance.InstanceManager
 import com.cognifide.gradle.common.utils.Formats

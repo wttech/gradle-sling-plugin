@@ -62,7 +62,7 @@ class LocalInstancePluginTest : SlingBuildTest() {
     fun `should setup and backup local sling instance`() {
         val projectDir = prepareProject("local-instance-setup-and-backup") {
             gradleProperties("""
-                instance.local-master.httpUrl=http://localhost:8088
+                instance.local-master.httpUrl=http://localhost:8081
                 instance.local-master.type=local
                 instance.local-master.jvmOpts=-server -Xmx2048m -XX:MaxPermSize=512M -Djava.awt.headless=true
 

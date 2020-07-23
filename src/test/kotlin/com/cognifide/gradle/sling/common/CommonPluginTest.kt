@@ -16,16 +16,10 @@ class CommonPluginTest : SlingTest() {
         extensions.getByType(SlingExtension::class.java).apply {
             val instances = instanceManager.defined.get()
 
-            assertEquals(2, instances.size)
+            assertEquals(1, instances.size)
 
             instances[0].apply {
-                assertEquals("local-author", name)
-                assertTrue(author)
-                assertNotNull(json)
-            }
-            instances[1].apply {
-                assertEquals("local-publish", name)
-                assertTrue(publish)
+                assertEquals("local-master", name)
                 assertNotNull(json)
             }
 

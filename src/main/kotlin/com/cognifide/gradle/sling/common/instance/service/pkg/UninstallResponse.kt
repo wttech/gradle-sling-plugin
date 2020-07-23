@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 class UninstallResponse : PackageResponse() {
 
-    override val success: Boolean get() =  (operation == "uninstallation" && status == "done")
+    override val success: Boolean get() = (operation == "uninstallation" && status == "done")
 
     @JsonProperty("package")
     lateinit var pkg: Package

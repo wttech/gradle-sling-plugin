@@ -70,7 +70,7 @@ open class InstanceManager(val sling: SlingExtension) {
                 Instance.parse(sling, it) { env = Instance.ENV_CMD }
             } ?: listOf()
             val fromProperties = Instance.properties(sling)
-            (fromCmd + fromProperties).ifEmpty { Instance.defaultPair(sling) }
+            (fromCmd + fromProperties).ifEmpty { Instance.defaults(sling) }
         })
     }
 

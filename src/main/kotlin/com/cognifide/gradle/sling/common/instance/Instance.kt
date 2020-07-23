@@ -2,7 +2,6 @@ package com.cognifide.gradle.sling.common.instance
 
 import com.cognifide.gradle.sling.SlingException
 import com.cognifide.gradle.sling.SlingExtension
-import com.cognifide.gradle.sling.SlingVersion
 import com.cognifide.gradle.sling.common.instance.action.AwaitDownAction
 import com.cognifide.gradle.sling.common.instance.action.AwaitUpAction
 import com.cognifide.gradle.sling.common.instance.action.CheckAction
@@ -238,9 +237,7 @@ open class Instance(@Transient @get:JsonIgnore protected val sling: SlingExtensi
 
         const val ENV_CMD = "cmd"
 
-        const val URL_AUTHOR_DEFAULT = "http://localhost:4502"
-
-        const val URL_PUBLISH_DEFAULT = "http://localhost:4503"
+        const val URL_MASTER_DEFAULT = "http://localhost:4502"
 
         const val USER_DEFAULT = "admin"
 
@@ -251,11 +248,9 @@ open class Instance(@Transient @get:JsonIgnore protected val sling: SlingExtensi
 
         val REMOTE_PROPS = listOf("httpUrl", "type", "user", "password")
 
-        fun defaultPair(sling: SlingExtension) = listOf(defaultAuthor(sling), defaultPublish(sling))
+        fun defaults(sling: SlingExtension) = listOf(defaultMaster(sling))
 
-        fun defaultAuthor(sling: SlingExtension) = create(sling, URL_AUTHOR_DEFAULT)
-
-        fun defaultPublish(sling: SlingExtension) = create(sling, URL_PUBLISH_DEFAULT)
+        fun defaultMaster(sling: SlingExtension) = create(sling, URL_MASTER_DEFAULT)
 
         fun parse(sling: SlingExtension, str: String, configurer: Instance.() -> Unit = {}): List<Instance> {
             return (Formats.toList(str) ?: listOf()).map { create(sling, it, configurer) }

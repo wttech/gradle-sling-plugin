@@ -6,13 +6,10 @@ import com.cognifide.gradle.sling.common.instance.action.AwaitDownAction
 import com.cognifide.gradle.sling.common.instance.action.AwaitUpAction
 import com.cognifide.gradle.sling.common.instance.local.*
 import com.cognifide.gradle.sling.instance.LocalInstancePlugin
-import com.cognifide.gradle.sling.javaVersions
 import com.cognifide.gradle.common.pluginProject
-import com.cognifide.gradle.common.utils.Patterns
 import com.cognifide.gradle.common.utils.onEachApply
 import com.cognifide.gradle.common.utils.using
 import org.buildobjects.process.ProcBuilder
-import org.gradle.api.JavaVersion
 import java.io.File
 import java.io.Serializable
 import java.util.concurrent.CopyOnWriteArrayList

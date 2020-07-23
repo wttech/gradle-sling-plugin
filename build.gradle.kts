@@ -222,7 +222,7 @@ pluginBundle {
     website = "https://github.com/Cognifide/gradle-sling-plugin"
     vcsUrl = "https://github.com/Cognifide/gradle-sling-plugin.git"
     description = "Gradle Sling Plugin"
-    tags = listOf("sling", "cq", "vault", "scr")
+    tags = listOf("sling", "osgi", "vault", "felix", "jcr", "oak", "scr", "bnd", "bndtool")
 }
 
 githubRelease {

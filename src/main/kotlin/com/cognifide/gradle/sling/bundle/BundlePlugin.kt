@@ -73,7 +73,7 @@ class BundlePlugin : CommonDefaultPlugin() {
     }
 
     /**
-     * @see <https://github.com/Cognifide/gradle-aem-plugin/issues/95>
+     * @see <https://github.com/wttech/gradle-aem-plugin/issues/95>
      */
     private fun Project.setupTestTask() = afterEvaluate {
         tasks {

@@ -1,4 +1,4 @@
-![Cognifide logo](docs/cognifide-logo.png)
+![WTT logo](docs/wtt-logo.png)
 
 [![Gradle Status](https://gradleupdate.appspot.com/Cognifide/gradle-sling-plugin/status.svg)](https://gradleupdate.appspot.com/Cognifide/gradle-sling-plugin/status)
 [![Apache License, Version 2.0, January 2004](docs/apache-license-badge.svg)](http://www.apache.org/licenses/)
@@ -31,7 +31,7 @@ Check out [live demo](https://adapt.to/2018/en/schedule/a-better-developer-exper
 
 ## Documentation
 
-This project is a **fork** of [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
+This project is a **fork** of [Gradle AEM Plugin](https://github.com/wttech/gradle-aem-plugin).
 
 Almost all of its concepts are applicable to pure Sling so that all of features of GAP 14.x.x are available in GSP.
 The maintenance and synchronization of two separate plugins may be exhausting, so that any **volunteers** that will take care about this fork are appreciated.
@@ -76,7 +76,7 @@ See: <https://github.com/ist-dresden/composum/issues/199>
 
 ## Building
 
-1. Clone this project using command `git clone https://github.com/Cognifide/gradle-sling-plugin.git`
+1. Clone this project using command `git clone https://github.com/wttech/gradle-sling-plugin.git`
 2. Enter cloned directory and simply run command: `gradlew`
 3. To use built plugin:
     * Add `mavenLocal()` to `repositories` section inside `pluginManagement` of *settings.gradle* file.

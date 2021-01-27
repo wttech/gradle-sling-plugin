@@ -136,7 +136,7 @@ class SlingExtension(val project: Project) : Serializable {
     /**
      * All instances matching default filtering.
      *
-     * @see <https://github.com/Cognifide/gradle-aem-plugin#filter-instances-to-work-with>
+     * @see <https://github.com/wttech/gradle-aem-plugin#filter-instances-to-work-with>
      */
     val instances get() = filterInstances()
 
@@ -166,7 +166,7 @@ class SlingExtension(val project: Project) : Serializable {
      *
      * Purpose of this method is to easily get any instance to work with (no matter how it will be defined).
      *
-     * @see <https://github.com/Cognifide/gradle-aem-plugin#filter-instances-to-work-with>
+     * @see <https://github.com/wttech/gradle-aem-plugin#filter-instances-to-work-with>
      */
     val anyInstance: Instance
         get() {

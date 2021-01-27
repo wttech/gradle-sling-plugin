@@ -219,14 +219,14 @@ gradlePlugin {
 }
 
 pluginBundle {
-    website = "https://github.com/Cognifide/gradle-sling-plugin"
-    vcsUrl = "https://github.com/Cognifide/gradle-sling-plugin.git"
+    website = "https://github.com/wttech/gradle-sling-plugin"
+    vcsUrl = "https://github.com/wttech/gradle-sling-plugin.git"
     description = "Gradle Sling Plugin"
     tags = listOf("sling", "osgi", "vault", "felix", "jcr", "oak", "scr", "bnd", "bndtool")
 }
 
 githubRelease {
-    owner("Cognifide")
+    owner("Wunderman Thompson Technology")
     repo("gradle-sling-plugin")
     token((findProperty("github.token") ?: "").toString())
     tagName(project.version.toString())

@@ -226,7 +226,7 @@ pluginBundle {
 }
 
 githubRelease {
-    owner("Wunderman Thompson Technology")
+    owner("wttech")
     repo("gradle-sling-plugin")
     token((findProperty("github.token") ?: "").toString())
     tagName(project.version.toString())
